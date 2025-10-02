@@ -1,5 +1,10 @@
 import type { ServiceBoardOptions } from "@/services/national-rail/DarwinService";
 
+type DarwinMethods =
+  | "GetArrivalBoardRequest"
+  | "GetDepartureBoardRequest"
+  | "GetArrBoardWithDetailsRequest";
+
 export class SoapXmlFactory {
   private readonly soapEnvolopeStart =
     '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:typ="http://thalesgroup.com/RTTI/2013-11-28/Token/types" xmlns:ldb="http://thalesgroup.com/RTTI/2017-10-01/ldb/">';
@@ -57,51 +62,34 @@ export class SoapXmlFactory {
     return body;
   }
 
-  getArrivals(options: ServiceBoardOptions): string {
+  private buildSoapRequest(
+    method: DarwinMethods,
+    options: ServiceBoardOptions,
+  ): string {
     let body =
       this.soapEnvolopeStart +
       this.soapHeader +
       this.soapBodyStart +
-      `<ldb:GetArrivalBoardRequest>` +
+      `<ldb:${method}>` +
       this.serviceBoardOptions +
-      `</ldb:GetArrivalBoardRequest>` +
+      `</ldb:${method}>` +
       this.soapBodyEnd +
       this.soapEnvelopeEnd;
 
     body = this.interpolateOptions(body, options);
 
     return body;
+  }
+
+  getArrivals(options: ServiceBoardOptions): string {
+    return this.buildSoapRequest("GetArrivalBoardRequest", options);
   }
 
   getDepartures(options: ServiceBoardOptions): string {
-    let body =
-      this.soapEnvolopeStart +
-      this.soapHeader +
-      this.soapBodyStart +
-      `<ldb:GetDepartureBoardRequest>` +
-      this.serviceBoardOptions +
-      `</ldb:GetDepartureBoardRequest>` +
-      this.soapBodyEnd +
-      this.soapEnvelopeEnd;
-
-    body = this.interpolateOptions(body, options);
-
-    return body;
+    return this.buildSoapRequest("GetDepartureBoardRequest", options);
   }
 
-  getDetailedArrivals(options: ServiceBoardOptions) {
-    let body =
-      this.soapEnvolopeStart +
-      this.soapHeader +
-      this.soapBodyStart +
-      `<ldb:GetArrBoardWithDetailsRequest>` +
-      this.serviceBoardOptions +
-      `</ldb:GetArrBoardWithDetailsRequest>` +
-      this.soapBodyEnd +
-      this.soapEnvelopeEnd;
-
-    body = this.interpolateOptions(body, options);
-
-    return body;
+  getDetailedArrivals(options: ServiceBoardOptions): string {
+    return this.buildSoapRequest("GetArrBoardWithDetailsRequest", options);
   }
 }
