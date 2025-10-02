@@ -2,7 +2,8 @@ import Koa from "koa";
 import bodyParser from "koa-bodyparser";
 import { globalErrorCatcher } from "@/api/middleware/error-handler";
 import { logRoute } from "@/api/middleware/log-route";
-import v1apiRoutes from "@/api/routes/v1-api-routes";
+import darwinRoutes from "@/api/routes/darwin-routes";
+import healthRoute from "@/api/routes/health-route";
 import { config } from "@/utils/config";
 import { logger } from "@/utils/logger";
 
@@ -13,7 +14,8 @@ app.use(globalErrorCatcher);
 app.use(logRoute);
 app.use(bodyParser());
 
-app.use(v1apiRoutes.routes());
+app.use(darwinRoutes.routes());
+app.use(healthRoute.routes());
 
 app.listen(SERVER_PORT, async () => {
   logger.info(
