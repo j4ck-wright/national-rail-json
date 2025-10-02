@@ -16,5 +16,7 @@ app.use(bodyParser());
 app.use(v1apiRoutes.routes());
 
 app.listen(SERVER_PORT, async () => {
-  logger.info(`Server started on port ${SERVER_PORT}`);
+  logger.info(
+    `Server started on port ${SERVER_PORT}, using Darwin endpoint ${config.DARWIN.ENDPOINT}`,
+  );
 });

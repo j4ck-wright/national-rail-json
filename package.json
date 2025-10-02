@@ -7,7 +7,7 @@
   "scripts": {
     "lint": "biome check",
     "lint:fix": "biome check --fix",
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/server.ts"
   },
   "keywords": [],
   "author": "",
