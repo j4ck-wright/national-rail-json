@@ -19,29 +19,25 @@ export class DarwinService {
   }
 
   private async fetchFromDarwin(body: string) {
-    try {
-      const response = await fetch(config.DARWIN.ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/soap+xml; charset=utf-8",
-        },
-        body,
-      });
+    const response = await fetch(config.DARWIN.ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/soap+xml; charset=utf-8",
+      },
+      body,
+    });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new DarwinError(
-          "Darwin API failure",
-          response.status,
-          response.statusText,
-          errorText,
-        );
-      }
-
-      return await response.text();
-    } catch (e) {
-      console.log("ERROR - ", e);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new DarwinError(
+        "Darwin API failure",
+        response.status,
+        response.statusText,
+        errorText,
+      );
     }
+
+    return await response.text();
   }
 
   async fetchArrivals({

@@ -3,7 +3,6 @@ import { getEnvWithDefault } from "./getEnv";
 export const config = {
   SERVER: {
     PORT: getEnvWithDefault("PORT", "3000"),
-    AUTH_HEADER_NAME: getEnvWithDefault("DARWIN_TOKEN_HEADER", "x-darwin-api"),
   },
   DARWIN: {
     ENDPOINT: getEnvWithDefault(

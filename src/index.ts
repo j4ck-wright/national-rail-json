@@ -1,6 +1,5 @@
 import Koa from "koa";
 import bodyParser from "koa-bodyparser";
-import { darwinAuth } from "./api/middleware/auth";
 import { globalErrorCatcher } from "./api/middleware/error-handler";
 import { logRoute } from "./api/middleware/log-route";
 import v1apiRoutes from "./api/routes/v1-api-routes";
@@ -11,7 +10,6 @@ const app = new Koa();
 const SERVER_PORT = config.SERVER.PORT;
 
 app.use(globalErrorCatcher);
-app.use(darwinAuth);
 app.use(logRoute);
 app.use(bodyParser());
 
