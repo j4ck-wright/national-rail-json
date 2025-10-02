@@ -6,15 +6,20 @@ import {
 import { XMLtoJSONConverter } from "@/services/national-rail/XMLtoJSONConverter";
 import { config } from "@/utils/config";
 
-type DarwinOperation =
+export type DarwinOperation =
   | "GetArrivalBoardResponse"
+  | "GetArrBoardWithDetailsResponse"
   | "GetDepartureBoardResponse"
-  | "GetArrBoardWithDetailsResponse";
+  | "GetDepBoardWithDetailsResponse";
 
-type methodName = "fetchArrivals" | "fetchDepartures" | "fetchDetailedArrivals";
+export type DarwinMethodNames =
+  | "fetchArrivals"
+  | "fetchDepartures"
+  | "fetchDetailedArrivals"
+  | "fetchDetailedDepartures";
 
 export abstract class BaseServiceController {
-  protected abstract readonly methodName: methodName;
+  protected abstract readonly methodName: DarwinMethodNames;
   protected abstract readonly responseType: DarwinOperation;
 
   protected async fetchServiceData(
@@ -28,6 +33,8 @@ export abstract class BaseServiceController {
         return await darwinService.fetchDepartures(body);
       case "fetchDetailedArrivals":
         return await darwinService.fetchDetailedArrivals(body);
+      case "fetchDetailedDepartures":
+        return await darwinService.fetchDetailedDepartures(body);
       default:
         throw new Error(`Invalid method name: ${this.methodName}`);
     }
@@ -80,11 +87,19 @@ class DetailedArrivalsController extends BaseServiceController {
   protected readonly responseType = "GetArrBoardWithDetailsResponse";
 }
 
+class DetailedDeparturesController extends BaseServiceController {
+  protected readonly methodName = "fetchDetailedDepartures";
+  protected readonly responseType = "GetDepBoardWithDetailsResponse";
+}
+
 const arrivalsController = new ArrivalsController();
 const departuresController = new DeparturesController();
 const detailedArrivalsController = new DetailedArrivalsController();
+const detailedDeparturesController = new DetailedDeparturesController();
 
 export const getArrivals = (ctx: Context) => arrivalsController.handle(ctx);
 export const getDepartures = (ctx: Context) => departuresController.handle(ctx);
 export const getDetailedArrivals = (ctx: Context) =>
   detailedArrivalsController.handle(ctx);
+export const getDetailedDepartures = (ctx: Context) =>
+  detailedDeparturesController.handle(ctx);

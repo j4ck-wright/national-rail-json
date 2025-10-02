@@ -3,7 +3,8 @@ import type { ServiceBoardOptions } from "@/services/national-rail/DarwinService
 type DarwinMethods =
   | "GetArrivalBoardRequest"
   | "GetDepartureBoardRequest"
-  | "GetArrBoardWithDetailsRequest";
+  | "GetArrBoardWithDetailsRequest"
+  | "GetDepBoardWithDetailsRequest";
 
 export class SoapXmlFactory {
   private readonly soapEnvolopeStart =
@@ -91,5 +92,9 @@ export class SoapXmlFactory {
 
   getDetailedArrivals(options: ServiceBoardOptions): string {
     return this.buildSoapRequest("GetArrBoardWithDetailsRequest", options);
+  }
+
+  getDetailedDepartures(options: ServiceBoardOptions): string {
+    return this.buildSoapRequest("GetDepBoardWithDetailsRequest", options);
   }
 }

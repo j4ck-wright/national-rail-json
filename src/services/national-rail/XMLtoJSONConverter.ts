@@ -1,4 +1,5 @@
 import { parseStringPromise } from "xml2js";
+import type { DarwinOperation } from "@/api/controllers/darwin-base-class-controller";
 
 export interface Service {
   sta?: string;
@@ -26,11 +27,6 @@ export interface StationBoard {
   trainServices?: ServicesContainer;
   busServices?: ServicesContainer;
 }
-
-type DarwinOperation =
-  | "GetDepartureBoardResponse"
-  | "GetArrivalBoardResponse"
-  | "GetArrBoardWithDetailsResponse";
 
 export class XMLtoJSONConverter {
   private xmlString: string;
