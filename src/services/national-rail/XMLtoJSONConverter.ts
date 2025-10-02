@@ -27,33 +27,21 @@ export interface StationBoard {
   busServices?: ServicesContainer;
 }
 
+type DarwinOperation =
+  | "GetDepartureBoardResponse"
+  | "GetArrivalBoardResponse"
+  | "GetArrBoardWithDetailsResponse";
+
 export class XMLtoJSONConverter {
   private xmlString: string;
+  private readonly operation: DarwinOperation;
 
-  constructor(xmlString: string) {
+  constructor(xmlString: string, opertation: DarwinOperation) {
     this.xmlString = xmlString;
+    this.operation = opertation;
   }
 
-  private unwrapSoapBody(
-    result: Record<string, unknown>,
-  ): StationBoard | undefined {
-    const body = result["Body"] as Record<string, unknown> | undefined;
-    const response = body?.["GetArrivalBoardResponse"] as
-      | Record<string, unknown>
-      | undefined;
-
-    const departureResponse = body?.["GetDepartureBoardResponse"] as
-      | Record<string, unknown>
-      | undefined;
-
-    const boardResult =
-      response?.["GetStationBoardResult"] ??
-      departureResponse?.["GetStationBoardResult"];
-
-    return boardResult as StationBoard | undefined;
-  }
-
-  private stripNamespaces = (obj: unknown): unknown => {
+  private stripNamespaces = (obj: object): object => {
     if (Array.isArray(obj)) {
       return obj.map((item) => this.stripNamespaces(item));
     }
@@ -116,15 +104,17 @@ export class XMLtoJSONConverter {
       trim: true,
       explicitRoot: false,
       mergeAttrs: false,
-    })) as Record<string, unknown>;
+    })) as {
+      "soap:Body": {
+        [K in DarwinOperation]: { GetStationBoardResult: object };
+      };
+    };
 
-    const removedNamespaces = this.stripNamespaces(rawJson) as Record<
-      string,
-      unknown
-    >;
+    const stationBoardData =
+      rawJson["soap:Body"][this.operation]["GetStationBoardResult"];
 
-    const withoutSoapBody = this.unwrapSoapBody(removedNamespaces);
-    const flattenedResponse = this.flattenServices(withoutSoapBody);
+    const removedNamespaces = this.stripNamespaces(stationBoardData);
+    const flattenedResponse = this.flattenServices(removedNamespaces);
 
     if (flattenedResponse && "$" in flattenedResponse) {
       delete flattenedResponse["$"];

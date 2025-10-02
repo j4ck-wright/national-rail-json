@@ -26,7 +26,12 @@ export const getArrivals = async (ctx: Context) => {
     return;
   }
 
-  const xmlToJsonConverter = new XMLtoJSONConverter(xmlArrivals);
+  const xmlToJsonConverter = new XMLtoJSONConverter(
+    xmlArrivals,
+    "GetArrivalBoardResponse",
+  );
+
+  console.log(xmlArrivals);
   const jsonArrivals = await xmlToJsonConverter.convert();
 
   ctx.body = jsonArrivals;

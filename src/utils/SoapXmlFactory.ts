@@ -46,14 +46,18 @@ export class SoapXmlFactory {
     return body.replace(`%%${key}%%`, value);
   }
 
-  getArrivals({
-    crs,
-    numRows,
-    filterCrs,
-    filterType,
-    timeOffset,
-    timeWindow,
-  }: ServiceBoardOptions): string {
+  interpolateOptions(body: string, options: ServiceBoardOptions) {
+    body = this.interpolate(body, "crs", options.crs);
+    body = this.interpolate(body, "numRows", options.numRows);
+    body = this.interpolate(body, "filterCrs", options.filterCrs);
+    body = this.interpolate(body, "filterType", options.filterType);
+    body = this.interpolate(body, "timeOffset", options.timeOffset);
+    body = this.interpolate(body, "timeWindow", options.timeWindow);
+
+    return body;
+  }
+
+  getArrivals(options: ServiceBoardOptions): string {
     let body =
       this.soapEnvolopeStart +
       this.soapHeader +
@@ -64,24 +68,12 @@ export class SoapXmlFactory {
       this.soapBodyEnd +
       this.soapEnvelopeEnd;
 
-    body = this.interpolate(body, "crs", crs);
-    body = this.interpolate(body, "numRows", numRows);
-    body = this.interpolate(body, "filterCrs", filterCrs);
-    body = this.interpolate(body, "filterType", filterType);
-    body = this.interpolate(body, "timeOffset", timeOffset);
-    body = this.interpolate(body, "timeWindow", timeWindow);
+    body = this.interpolateOptions(body, options);
 
     return body;
   }
 
-  getDepartures({
-    crs,
-    numRows,
-    filterCrs,
-    filterType,
-    timeOffset,
-    timeWindow,
-  }: ServiceBoardOptions): string {
+  getDepartures(options: ServiceBoardOptions): string {
     let body =
       this.soapEnvolopeStart +
       this.soapHeader +
@@ -92,12 +84,23 @@ export class SoapXmlFactory {
       this.soapBodyEnd +
       this.soapEnvelopeEnd;
 
-    body = this.interpolate(body, "crs", crs);
-    body = this.interpolate(body, "numRows", numRows);
-    body = this.interpolate(body, "filterCrs", filterCrs);
-    body = this.interpolate(body, "filterType", filterType);
-    body = this.interpolate(body, "timeOffset", timeOffset);
-    body = this.interpolate(body, "timeWindow", timeWindow);
+    body = this.interpolateOptions(body, options);
+
+    return body;
+  }
+
+  getDetailedArrivals(options: ServiceBoardOptions) {
+    let body =
+      this.soapEnvolopeStart +
+      this.soapHeader +
+      this.soapBodyStart +
+      `<ldb:GetArrBoardWithDetailsRequest>` +
+      this.serviceBoardOptions +
+      `</ldb:GetArrBoardWithDetailsRequest>` +
+      this.soapBodyEnd +
+      this.soapEnvelopeEnd;
+
+    body = this.interpolateOptions(body, options);
 
     return body;
   }

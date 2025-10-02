@@ -6,7 +6,7 @@ import {
 import { XMLtoJSONConverter } from "../../services/national-rail/XMLtoJSONConverter";
 import { config } from "../../utils/config";
 
-export const getDepartures = async (ctx: Context) => {
+export const getDetailedArrivals = async (ctx: Context) => {
   const darwinToken = config.DARWIN.TOKEN;
   const body = ctx.request.body as ServiceBoardOptions;
 
@@ -19,7 +19,7 @@ export const getDepartures = async (ctx: Context) => {
   body.crs = body.crs.toUpperCase();
 
   const darwinService = new DarwinService(darwinToken);
-  const xmlArrivals = await darwinService.fetchDepartures(body);
+  const xmlArrivals = await darwinService.fetchDetailedArrivals(body);
 
   if (!xmlArrivals) {
     ctx.status = 204;
@@ -28,7 +28,7 @@ export const getDepartures = async (ctx: Context) => {
 
   const xmlToJsonConverter = new XMLtoJSONConverter(
     xmlArrivals,
-    "GetDepartureBoardResponse",
+    "GetArrBoardWithDetailsResponse",
   );
   const jsonArrivals = await xmlToJsonConverter.convert();
 
