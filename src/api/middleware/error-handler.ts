@@ -1,6 +1,6 @@
 import type { Context, Next } from "koa";
-import { DarwinError } from "../../errors/DarwinError";
-import { logger } from "../../utils/logger";
+import { DarwinError } from "@/errors/DarwinError";
+import { logger } from "@/utils/logger";
 
 export const globalErrorCatcher = async (ctx: Context, next: Next) => {
   try {

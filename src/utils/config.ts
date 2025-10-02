@@ -1,4 +1,4 @@
-import { getEnvWithDefault } from "./getEnv";
+import { getEnvWithDefault } from "@/utils/getEnv";
 
 export const config = {
   SERVER: {

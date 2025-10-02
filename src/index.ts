@@ -1,10 +1,10 @@
 import Koa from "koa";
 import bodyParser from "koa-bodyparser";
-import { globalErrorCatcher } from "./api/middleware/error-handler";
-import { logRoute } from "./api/middleware/log-route";
-import v1apiRoutes from "./api/routes/v1-api-routes";
-import { config } from "./utils/config";
-import { logger } from "./utils/logger";
+import { globalErrorCatcher } from "@/api/middleware/error-handler";
+import { logRoute } from "@/api/middleware/log-route";
+import v1apiRoutes from "@/api/routes/v1-api-routes";
+import { config } from "@/utils/config";
+import { logger } from "@/utils/logger";
 
 const app = new Koa();
 const SERVER_PORT = config.SERVER.PORT;

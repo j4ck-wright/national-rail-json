@@ -1,6 +1,6 @@
-import { DarwinError } from "../../errors/DarwinError";
-import { config } from "../../utils/config";
-import { SoapXmlFactory } from "../../utils/SoapXmlFactory";
+import { DarwinError } from "@/errors/DarwinError";
+import { config } from "@/utils/config";
+import { SoapXmlFactory } from "@/utils/SoapXmlFactory";
 
 export type ServiceBoardOptions = {
   numRows: string | undefined;

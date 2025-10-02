@@ -2,9 +2,9 @@ import type { Context } from "koa";
 import {
   DarwinService,
   type ServiceBoardOptions,
-} from "../../services/national-rail/DarwinService";
-import { XMLtoJSONConverter } from "../../services/national-rail/XMLtoJSONConverter";
-import { config } from "../../utils/config";
+} from "@/services/national-rail/DarwinService";
+import { XMLtoJSONConverter } from "@/services/national-rail/XMLtoJSONConverter";
+import { config } from "@/utils/config";
 
 type DarwinOperation =
   | "GetArrivalBoardResponse"

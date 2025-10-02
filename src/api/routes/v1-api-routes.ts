@@ -3,8 +3,8 @@ import {
   getArrivals,
   getDepartures,
   getDetailedArrivals,
-} from "../controllers/darwin-base-class-controller";
-import { healthController } from "../controllers/health-controller";
+} from "@/api/controllers/darwin-base-class-controller";
+import { healthController } from "@/api/controllers/health-controller";
 
 const router = new Router({ prefix: "/api/v1" });
 

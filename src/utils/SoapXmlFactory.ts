@@ -1,4 +1,4 @@
-import type { ServiceBoardOptions } from "../services/national-rail/DarwinService";
+import type { ServiceBoardOptions } from "@/services/national-rail/DarwinService";
 
 export class SoapXmlFactory {
   private readonly soapEnvolopeStart =
