@@ -1,7 +1,9 @@
 import Router from "@koa/router";
-import { getArrivals } from "../controllers/arrivals-controller";
-import { getDepartures } from "../controllers/departures-controller";
-import { getDetailedArrivals } from "../controllers/detailed-arrivals-controller.ts";
+import {
+  getArrivals,
+  getDepartures,
+  getDetailedArrivals,
+} from "../controllers/darwin-base-class-controller";
 import { healthController } from "../controllers/health-controller";
 
 const router = new Router({ prefix: "/api/v1" });
