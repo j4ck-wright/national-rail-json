@@ -85,4 +85,12 @@ export class DarwinService {
     const data = await this.fetchFromDarwin(payload);
     return data;
   }
+
+  async fetchDetailedArrivalDepartures(options: ServiceBoardOptions) {
+    const xmlBuilder = new SoapXmlFactory(this.apiToken);
+    const payload = xmlBuilder.getDetailedArrivalDepartures(options);
+
+    const data = await this.fetchFromDarwin(payload);
+    return data;
+  }
 }
