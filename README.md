@@ -6,6 +6,11 @@ The underlying API (Darwin) uses a [SOAP](https://en.wikipedia.org/wiki/SOAP) pr
 
 This app is built specifically to use [OpenLDBWS/ldb11](https://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb11.asmx)
 
+<div position="center">
+
+<img width="1200px" alt="A response from the National Rail JSON Api, showing a list of departing trains from Leeds, including a poor weather alert" src="readme-assets/nationrailjson.png">
+</div>
+
 ## What is LDBWS?
 
 From [their documentation](https://lite.realtime.nationalrail.co.uk/OpenLDBWS/):
