@@ -4,7 +4,7 @@ import { config } from "@/utils/config";
 const { combine, timestamp, json, errors } = winston.format;
 
 export const logger = winston.createLogger({
-  level: config.LOGGING.LOG_LEVEL ?? "info",
+  level: config.LOGGING.LOG_LEVEL,
   defaultMeta: {
     service: "nationl-rail-json",
   },
