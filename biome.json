@@ -10,7 +10,7 @@
     }
   },
   "files": {
-    "includes": ["**", "!coverage"]
+    "includes": ["**", "!coverage", "!dist"]
   },
   "formatter": {
     "enabled": true,
