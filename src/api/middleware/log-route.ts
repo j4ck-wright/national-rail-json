@@ -13,7 +13,6 @@ export const logRoute = async (ctx: Context, next: Next) => {
       status: ctx.status,
       headers: ctx.headers,
       duration: `${ms}ms`,
-      body: ctx.request.body,
     });
   }
 };
