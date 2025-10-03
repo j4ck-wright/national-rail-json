@@ -9,6 +9,9 @@
       "recommended": true
     }
   },
+  "files": {
+    "includes": ["**", "!coverage"]
+  },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
