@@ -1,3 +1,4 @@
+import type { ParsedUrlQuery } from "node:querystring";
 import type { Context } from "koa";
 import {
   DarwinService,
@@ -24,42 +25,67 @@ export abstract class BaseServiceController {
 
   protected async fetchServiceData(
     darwinService: DarwinService,
-    body: ServiceBoardOptions,
+    options: ServiceBoardOptions,
   ): Promise<string> {
     switch (this.methodName) {
       case "fetchArrivals":
-        return await darwinService.fetchArrivals(body);
+        return await darwinService.fetchArrivals(options);
       case "fetchDepartures":
-        return await darwinService.fetchDepartures(body);
+        return await darwinService.fetchDepartures(options);
       case "fetchDetailedArrivals":
-        return await darwinService.fetchDetailedArrivals(body);
+        return await darwinService.fetchDetailedArrivals(options);
       case "fetchDetailedDepartures":
-        return await darwinService.fetchDetailedDepartures(body);
+        return await darwinService.fetchDetailedDepartures(options);
       default:
         throw new Error(`Invalid method name: ${this.methodName}`);
     }
   }
 
+  private getQueryParam(
+    queries: ParsedUrlQuery,
+    key: string,
+  ): string | undefined {
+    const query = queries[key];
+
+    if (Array.isArray(query)) {
+      return query[0];
+    }
+
+    return query;
+  }
+
   async handle(ctx: Context): Promise<void> {
     const darwinToken = config.DARWIN.TOKEN;
-    const body = ctx.request.body as ServiceBoardOptions;
+    const query = ctx.request.query;
 
-    if (!body.crs) {
+    const options: ServiceBoardOptions = {
+      crs: this.getQueryParam(query, "crs"),
+      numRows: this.getQueryParam(query, "numRows") ?? "10",
+      filterCrs: this.getQueryParam(query, "filterCrs"),
+      filterType: this.getQueryParam(query, "filterType") as
+        | "to"
+        | "from"
+        | undefined,
+      timeOffset: this.getQueryParam(query, "timeOffset"),
+      timeWindow: this.getQueryParam(query, "timeWindow"),
+    };
+
+    if (!options.crs) {
       ctx.status = 400;
-      ctx.body = { error: "Missing 'crs' in request body" };
+      ctx.body = { error: "Missing 'crs' query parameter" };
       return;
     }
 
-    if (body.crs.length !== 3) {
+    if (options.crs.length !== 3) {
       ctx.status = 400;
       ctx.body = { error: "invalid 'crs'" };
       return;
     }
 
-    body.crs = body.crs.toUpperCase();
+    options.crs = options.crs.toUpperCase();
 
     const darwinService = new DarwinService(darwinToken);
-    const xmlResponse = await this.fetchServiceData(darwinService, body);
+    const xmlResponse = await this.fetchServiceData(darwinService, options);
 
     const xmlToJsonConverter = new XMLtoJSONConverter(
       xmlResponse,

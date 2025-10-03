@@ -8,9 +8,9 @@ import {
 
 const router = new Router();
 
-router.post("/arrivals", getArrivals);
-router.post("/arrivals/detailed", getDetailedArrivals);
-router.post("/departures", getDepartures);
-router.post("/departures/detailed", getDetailedDepartures);
+router.get("/arrivals", getArrivals);
+router.get("/arrivals/detailed", getDetailedArrivals);
+router.get("/departures", getDepartures);
+router.get("/departures/detailed", getDetailedDepartures);
 
 export default router;
