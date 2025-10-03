@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, expect, test, vi } from "vitest";
 import {
   BaseServiceController,
   type DarwinMethodNames,
@@ -193,7 +193,7 @@ describe("DarwinBaseClassController", () => {
         },
       );
 
-      test("should throw an error for invalid methodName", async () => {
+      it("should throw an error for invalid methodName", async () => {
         class InvalidTestController extends BaseServiceController {
           protected readonly methodName = "invalidMethod" as DarwinMethodNames;
           protected readonly responseType =
@@ -215,7 +215,7 @@ describe("DarwinBaseClassController", () => {
         ).rejects.toThrow("Invalid method name: invalidMethod");
       });
 
-      test("should pass options correctly to the darwin service method", async () => {
+      it("should pass options correctly to the darwin service method", async () => {
         const controller = new TestController();
         const options = {
           crs: "LON",
@@ -239,7 +239,7 @@ describe("DarwinBaseClassController", () => {
         expect(mockDarwinService.fetchArrivals).toHaveBeenCalledWith(options);
       });
 
-      test("If valid filterType is used, don't switch to default", async () => {
+      it("If valid filterType is used, don't switch to default", async () => {
         const controller = new TestController();
         const options = {
           crs: "LON",
@@ -268,7 +268,7 @@ describe("DarwinBaseClassController", () => {
         mockContext = createMockContext();
       });
 
-      test("should return 400 error when crs query parameter is missing", async () => {
+      it("should return 400 error when crs query parameter is missing", async () => {
         const controller = new TestController();
         mockContext = createMockContext({});
 
@@ -280,7 +280,7 @@ describe("DarwinBaseClassController", () => {
         });
       });
 
-      test("should return 400 error when crs length is not 3 characters", async () => {
+      it("should return 400 error when crs length is not 3 characters", async () => {
         const controller = new TestController();
         mockContext = createMockContext({ crs: TEST_DATA.invalidCrs });
 
@@ -290,7 +290,7 @@ describe("DarwinBaseClassController", () => {
         expect(mockContext.body).toEqual({ error: "invalid 'crs'" });
       });
 
-      test("should convert crs to uppercase", async () => {
+      it("should convert crs to uppercase", async () => {
         const controller = new TestController();
         mockContext = createMockContext({ crs: "lon" });
         setupSuccessfulResponse(mockDarwinService, mockXMLtoJSONConverter);
@@ -303,7 +303,7 @@ describe("DarwinBaseClassController", () => {
         );
       });
 
-      test('should use default numRows of "10" when not provided', async () => {
+      it('should use default numRows of "10" when not provided', async () => {
         const controller = new TestController();
         mockContext = createMockContext({ crs: TEST_DATA.validCrs });
         setupSuccessfulResponse(mockDarwinService, mockXMLtoJSONConverter);
@@ -315,7 +315,7 @@ describe("DarwinBaseClassController", () => {
         );
       });
 
-      test("should pick the first query parameter if user gives an array", async () => {
+      it("should pick the first query parameter if user gives an array", async () => {
         const controller = new TestController();
         mockContext.request.query = {
           crs: ["LON", "BHM"],
@@ -331,7 +331,7 @@ describe("DarwinBaseClassController", () => {
         );
       });
 
-      test("should create DarwinService with correct token", async () => {
+      it("should create DarwinService with correct token", async () => {
         const controller = new TestController();
         mockContext.request.query = { crs: "LON" };
         mockDarwinService.fetchArrivals.mockResolvedValue("mock-xml");
@@ -342,7 +342,7 @@ describe("DarwinBaseClassController", () => {
         expect(MockedDarwinService).toHaveBeenCalledWith("mock-token");
       });
 
-      test("should fetch service data using the correct options", async () => {
+      it("should fetch service data using the correct options", async () => {
         const controller = new TestController();
         mockContext.request.query = {
           crs: "LON",
@@ -367,7 +367,7 @@ describe("DarwinBaseClassController", () => {
         });
       });
 
-      test("should convert XML response to JSON using XMLtoJSONConverter", async () => {
+      it("should convert XML response to JSON using XMLtoJSONConverter", async () => {
         const controller = new TestController();
         mockContext.request.query = { crs: "LON" };
         mockDarwinService.fetchArrivals.mockResolvedValue("mock-xml-response");
@@ -382,7 +382,7 @@ describe("DarwinBaseClassController", () => {
         expect(mockXMLtoJSONConverter.convert).toHaveBeenCalled();
       });
 
-      test("should return JSON data with 200 status on success", async () => {
+      it("should return JSON data with 200 status on success", async () => {
         const controller = new TestController();
         mockContext.request.query = { crs: "LON" };
         const mockJsonData = { data: "mock-json-data" };
@@ -395,7 +395,7 @@ describe("DarwinBaseClassController", () => {
         expect(mockContext.body).toEqual(mockJsonData);
       });
 
-      test("should handle filterCrs parameter correctly", async () => {
+      it("should handle filterCrs parameter correctly", async () => {
         const controller = new TestController();
         mockContext.request.query = { crs: "LON", filterCrs: "BHM" };
         mockDarwinService.fetchArrivals.mockResolvedValue("mock-xml");
@@ -408,7 +408,7 @@ describe("DarwinBaseClassController", () => {
         );
       });
 
-      test("should fallback to default filterType if invalid value is provided", async () => {
+      it("should fallback to default filterType if invalid value is provided", async () => {
         const controller = new TestController();
         mockContext.request.query = { crs: "LON", filterType: "everywhere!" };
         mockDarwinService.fetchArrivals.mockResolvedValue("mock-xml");
@@ -421,7 +421,7 @@ describe("DarwinBaseClassController", () => {
         );
       });
 
-      test("should handle timeOffset parameter correctly", async () => {
+      it("should handle timeOffset parameter correctly", async () => {
         const controller = new TestController();
         mockContext.request.query = { crs: "LON", timeOffset: "30" };
         mockDarwinService.fetchArrivals.mockResolvedValue("mock-xml");
@@ -434,7 +434,7 @@ describe("DarwinBaseClassController", () => {
         );
       });
 
-      test("should handle timeWindow parameter correctly", async () => {
+      it("should handle timeWindow parameter correctly", async () => {
         const controller = new TestController();
         mockContext.request.query = { crs: "LON", timeWindow: "120" };
         mockDarwinService.fetchArrivals.mockResolvedValue("mock-xml");
@@ -447,7 +447,7 @@ describe("DarwinBaseClassController", () => {
         );
       });
 
-      test("should handle errors thrown by DarwinService", async () => {
+      it("should handle errors thrown by DarwinService", async () => {
         const controller = new TestController();
         mockContext.request.query = { crs: "LON" };
         mockDarwinService.fetchArrivals.mockRejectedValue(

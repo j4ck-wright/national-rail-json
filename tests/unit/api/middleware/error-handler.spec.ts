@@ -1,5 +1,5 @@
 import type { Context, Next } from "koa";
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, expect, vi } from "vitest";
 import { globalErrorCatcher } from "@/api/middleware/error-handler";
 import { DarwinError } from "@/errors/DarwinError";
 import { logger } from "@/utils/logger";
@@ -27,7 +27,7 @@ describe("globalErrorCatcher middleware", () => {
     mockNext = vi.fn().mockResolvedValue(undefined);
   });
 
-  test("should pass through when no error is thrown", async () => {
+  it("should pass through when no error is thrown", async () => {
     await globalErrorCatcher(mockContext as Context, mockNext);
 
     expect(mockNext).toHaveBeenCalledOnce();
@@ -36,7 +36,7 @@ describe("globalErrorCatcher middleware", () => {
     expect(mockLogger.error).not.toHaveBeenCalled();
   });
 
-  test("should handle generic Error instances", async () => {
+  it("should handle generic Error instances", async () => {
     const error = new Error("Something went wrong");
     mockNext = vi.fn().mockRejectedValue(error);
 
@@ -49,7 +49,7 @@ describe("globalErrorCatcher middleware", () => {
     );
   });
 
-  test("should handle DarwinError with status code and status text", async () => {
+  it("should handle DarwinError with status code and status text", async () => {
     const darwinError = new DarwinError(
       "Darwin service failed",
       400,
@@ -66,7 +66,7 @@ describe("globalErrorCatcher middleware", () => {
     );
   });
 
-  test("should handle DarwinError without status code (defaults to 500)", async () => {
+  it("should handle DarwinError without status code (defaults to 500)", async () => {
     const darwinError = new DarwinError(
       "Darwin service failed",
       undefined,
@@ -83,7 +83,7 @@ describe("globalErrorCatcher middleware", () => {
     );
   });
 
-  test("should handle DarwinError with null status code (defaults to 500)", async () => {
+  it("should handle DarwinError with null status code (defaults to 500)", async () => {
     const darwinError = new DarwinError(
       "Darwin service failed",
       null as unknown as number,
@@ -100,7 +100,7 @@ describe("globalErrorCatcher middleware", () => {
     );
   });
 
-  test("should handle non-Error objects", async () => {
+  it("should handle non-Error objects", async () => {
     const nonError = "String error";
     mockNext = vi.fn().mockRejectedValue(nonError);
 
@@ -113,7 +113,7 @@ describe("globalErrorCatcher middleware", () => {
     );
   });
 
-  test("should handle null/undefined errors", async () => {
+  it("should handle null/undefined errors", async () => {
     mockNext = vi.fn().mockRejectedValue(null);
 
     await globalErrorCatcher(mockContext as Context, mockNext);
@@ -123,7 +123,7 @@ describe("globalErrorCatcher middleware", () => {
     expect(mockLogger.error).toHaveBeenCalledWith("Unhandled error: null");
   });
 
-  test("should preserve original context properties when no error occurs", async () => {
+  it("should preserve original context properties when no error occurs", async () => {
     mockContext.status = 201;
     mockContext.body = { success: true };
 
@@ -133,7 +133,7 @@ describe("globalErrorCatcher middleware", () => {
     expect(mockContext.body).toEqual({ success: true });
   });
 
-  test("should handle DarwinError with statusText as null", async () => {
+  it("should handle DarwinError with statusText as null", async () => {
     const darwinError = new DarwinError("Service error", 503, null);
     mockNext = vi.fn().mockRejectedValue(darwinError);
 
@@ -146,7 +146,7 @@ describe("globalErrorCatcher middleware", () => {
     );
   });
 
-  test("should verify Error instanceof check works for regular Error", async () => {
+  it("should verify Error instanceof check works for regular Error", async () => {
     const regularError = new Error("Regular error message");
     mockNext = vi.fn().mockRejectedValue(regularError);
 
@@ -159,7 +159,7 @@ describe("globalErrorCatcher middleware", () => {
     );
   });
 
-  test("should verify DarwinError instanceof checks work correctly", async () => {
+  it("should verify DarwinError instanceof checks work correctly", async () => {
     const darwinError = new DarwinError("Darwin message", 400, "Bad Request");
 
     expect(darwinError instanceof Error).toBe(true);

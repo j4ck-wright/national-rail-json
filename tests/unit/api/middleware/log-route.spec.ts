@@ -1,5 +1,5 @@
 import type { Context, Next } from "koa";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, expect, vi } from "vitest";
 import { logRoute } from "@/api/middleware/log-route";
 import { logger } from "@/utils/logger";
 
@@ -43,7 +43,7 @@ describe("logRoute middleware", () => {
     Date.now = originalDateNow;
   });
 
-  test("should log request details after middleware execution", async () => {
+  it("should log request details after middleware execution", async () => {
     await logRoute(mockContext as Context, mockNext);
 
     expect(mockNext).toHaveBeenCalledOnce();
@@ -59,7 +59,7 @@ describe("logRoute middleware", () => {
     });
   });
 
-  test("should calculate correct duration", async () => {
+  it("should calculate correct duration", async () => {
     const startTime = 2000;
     const endTime = 2250;
     let callCount = 0;
@@ -78,7 +78,7 @@ describe("logRoute middleware", () => {
     );
   });
 
-  test("should log even when next() throws an error", async () => {
+  it("should log even when next() throws an error", async () => {
     const error = new Error("Middleware error");
     mockNext = vi.fn().mockRejectedValue(error);
 
@@ -98,7 +98,7 @@ describe("logRoute middleware", () => {
     });
   });
 
-  test("should handle requests with no headers", async () => {
+  it("should handle requests with no headers", async () => {
     mockContext.headers = {};
 
     await logRoute(mockContext as Context, mockNext);
@@ -110,7 +110,7 @@ describe("logRoute middleware", () => {
     );
   });
 
-  test("should preserve the order of execution (next called before logging)", async () => {
+  it("should preserve the order of execution (next called before logging)", async () => {
     const executionOrder: string[] = [];
 
     mockNext = vi.fn().mockImplementation(async () => {
