@@ -40,93 +40,47 @@ export class DarwinService {
     return await response.text();
   }
 
-  async fetchArrivals({
-    crs,
-    numRows = "10",
-    filterCrs,
-    filterType,
-    timeOffset,
-    timeWindow,
-  }: ServiceBoardOptions) {
+  async fetchArrivals(options: ServiceBoardOptions) {
     const xmlBuiler = new SoapXmlFactory(this.apiToken);
 
-    const payload = xmlBuiler.getArrivals({
-      crs,
-      numRows,
-      filterCrs,
-      filterType,
-      timeOffset,
-      timeWindow,
-    });
+    const payload = xmlBuiler.getArrivals(options);
 
     const data = await this.fetchFromDarwin(payload);
     return data;
   }
 
-  async fetchDepartures({
-    crs,
-    numRows = "10",
-    filterCrs,
-    filterType,
-    timeOffset,
-    timeWindow,
-  }: ServiceBoardOptions) {
+  async fetchDepartures(options: ServiceBoardOptions) {
     const xmlBuiler = new SoapXmlFactory(this.apiToken);
 
-    const payload = xmlBuiler.getDepartures({
-      crs,
-      numRows,
-      filterCrs,
-      filterType,
-      timeOffset,
-      timeWindow,
-    });
+    const payload = xmlBuiler.getDepartures(options);
 
     const data = await this.fetchFromDarwin(payload);
     return data;
   }
 
-  async fetchDetailedArrivals({
-    crs,
-    numRows = "10",
-    filterCrs,
-    filterType,
-    timeOffset,
-    timeWindow,
-  }: ServiceBoardOptions) {
+  async fetchDetailedArrivals(options: ServiceBoardOptions) {
     const xmlBuiler = new SoapXmlFactory(this.apiToken);
 
-    const payload = xmlBuiler.getDetailedArrivals({
-      crs,
-      numRows,
-      filterCrs,
-      filterType,
-      timeOffset,
-      timeWindow,
-    });
+    const payload = xmlBuiler.getDetailedArrivals(options);
 
     const data = await this.fetchFromDarwin(payload);
     return data;
   }
 
-  async fetchDetailedDepartures({
-    crs,
-    numRows = "10",
-    filterCrs,
-    filterType,
-    timeOffset,
-    timeWindow,
-  }: ServiceBoardOptions) {
+  async fetchDetailedDepartures(options: ServiceBoardOptions) {
     const xmlBuiler = new SoapXmlFactory(this.apiToken);
 
-    const payload = xmlBuiler.getDetailedDepartures({
-      crs,
-      numRows,
-      filterCrs,
-      filterType,
-      timeOffset,
-      timeWindow,
-    });
+    const payload = xmlBuiler.getDetailedDepartures(options);
+
+    const data = await this.fetchFromDarwin(payload);
+    return data;
+  }
+
+  async fetchArrivalsDepartures(options: ServiceBoardOptions) {
+    const xmlBuilder = new SoapXmlFactory(this.apiToken);
+
+    const payload = xmlBuilder.getArrivalDepartures(options);
+    console.log(payload);
 
     const data = await this.fetchFromDarwin(payload);
     return data;

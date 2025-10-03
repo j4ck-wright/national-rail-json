@@ -1,5 +1,6 @@
 import Router from "@koa/router";
 import {
+  getArrivalDepartures,
   getArrivals,
   getDepartures,
   getDetailedArrivals,
@@ -481,5 +482,7 @@ router.get("/departures", getDepartures);
  *               error: "Internal server error"
  */
 router.get("/departures/detailed", getDetailedDepartures);
+
+router.get("/arrivals_and_departures", getArrivalDepartures);
 
 export default router;
