@@ -2,7 +2,7 @@
 
 A RESTful JSON API acting as a proxy to National Rail's LDBWS (Live Departure Board Web Service) written using NodeJS & TypeScript
 
-The underlying API (Darwin) uses a [SOAP](https://en.wikipedia.org/wiki/SOAP) protocol can be perticulaly tricky when using on a frontend application.
+The underlying API (Darwin) uses a [SOAP](https://en.wikipedia.org/wiki/SOAP) protocol and can be perticulaly tricky when using on a frontend application.
 
 This app is built specifically to use [OpenLDBWS/ldb11](https://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb11.asmx)
 
