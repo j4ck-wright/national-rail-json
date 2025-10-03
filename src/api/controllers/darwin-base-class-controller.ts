@@ -54,6 +54,11 @@ export abstract class BaseServiceController {
     return query;
   }
 
+  private getValidFilterType(filterType: string | undefined): "to" | "from" {
+    if (filterType === "from") return filterType;
+    return "to";
+  }
+
   async handle(ctx: Context): Promise<void> {
     const darwinToken = config.DARWIN.TOKEN;
     const query = ctx.request.query;
@@ -62,10 +67,9 @@ export abstract class BaseServiceController {
       crs: this.getQueryParam(query, "crs"),
       numRows: this.getQueryParam(query, "numRows") ?? "10",
       filterCrs: this.getQueryParam(query, "filterCrs"),
-      filterType: this.getQueryParam(query, "filterType") as
-        | "to"
-        | "from"
-        | undefined,
+      filterType: this.getValidFilterType(
+        this.getQueryParam(query, "filterType"),
+      ),
       timeOffset: this.getQueryParam(query, "timeOffset"),
       timeWindow: this.getQueryParam(query, "timeWindow"),
     };
