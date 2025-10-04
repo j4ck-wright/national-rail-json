@@ -20,14 +20,14 @@ This app is built specifically to use [OpenLDBWS/ldb11](https://lite.realtime.na
 
 From [their documentation](https://lite.realtime.nationalrail.co.uk/OpenLDBWS/):
 > LDBWS provides a request-response web service to access real time train information from Darwin. This is the same information that powers the Live Departure Boards, provided in XML format.
-## What This App Does
+## Features
 
 This application acts as a modern JSON wrapper around LDBWS, providing:
 
-- **XML to JSON conversion** - Transforms LDBWS XML responses into structured JSON
-- **RESTful API** - Simple HTTP GET endpoints instead of SOAP calls
-- **Real-time data** - Live departure and arrival boards for any UK station
-- **Filtering options** - Access to all filtering options you'd get from going directly to Darwin 
+- **XML to JSON conversion**
+- **RESTful API**
+- **Real-time Darin data**
+- **Filtering options**
 
 ## API Endpoints
 Swagger documentation is available at the root of the app. The currently supported routes are:
