@@ -24,7 +24,7 @@ const swaggerDefinition = {
           type: "string",
           pattern: "^[A-Za-z]{3}$",
         },
-        description: "Station CRS code (3 characters, e.g., LDS, BDI, YRK)",
+        description: "Station CRS code",
         example: "LDS",
       },
       NumRowsParameter: {
@@ -32,8 +32,10 @@ const swaggerDefinition = {
         name: "numRows",
         schema: {
           type: "string",
+          default: "10",
         },
-        description: "Number of results to return (default 10)",
+        description:
+          "Number of services to return in the resulting station board. Between 0 and 10 exclusive",
         example: "10",
       },
       FilterCrsParameter: {
@@ -44,7 +46,6 @@ const swaggerDefinition = {
           pattern: "^[A-Za-z]{3}$",
         },
         description: "Filter by station CRS code",
-        example: "BDI",
       },
       FilterTypeParameter: {
         in: "query",
@@ -52,9 +53,10 @@ const swaggerDefinition = {
         schema: {
           type: "string",
           enum: ["to", "from"],
+          default: "to",
         },
-        description: "Filter type",
-        example: "to",
+        description:
+          "The type of filter to apply. Filters services to include only those originating or terminating at the filterCrs location",
       },
       TimeOffsetParameter: {
         in: "query",
@@ -62,8 +64,9 @@ const swaggerDefinition = {
         schema: {
           type: "string",
         },
-        description: "Time offset in minutes from now",
-        example: "60",
+        description:
+          "An offset in minutes against the current time to provide the station board for. Between -120 and +120 exclusive",
+        default: "0",
       },
       TimeWindowParameter: {
         in: "query",
@@ -71,8 +74,9 @@ const swaggerDefinition = {
         schema: {
           type: "string",
         },
-        description: "Time window in minutes",
-        example: "120",
+        description:
+          "How far into the future in minutes against the current time to provide the station board for. Between -120 and +120 exclusive",
+        default: "0",
       },
     },
     responses: {
@@ -354,7 +358,8 @@ const swaggerDefinition = {
           },
           filterCrs: {
             type: "string",
-            description: "Filter by destination/origin CRS code",
+            description:
+              "The CRS code of either an origin or destination location to filter in",
             example: "BDI",
             pattern: "^[A-Z]{3}$",
           },
@@ -362,7 +367,7 @@ const swaggerDefinition = {
             type: "string",
             enum: ["to", "from"],
             description:
-              'Filter type - "to" for destination, "from" for origin',
+              "The type of filter to apply. Filters services to include only those originating or terminating at the filterCrs location",
             example: "to",
           },
           timeOffset: {
