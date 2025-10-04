@@ -41,6 +41,8 @@ export class XMLtoJSONConverter {
     switch (this.operation) {
       case "GetServiceDetailsResponse":
         return "GetServiceDetailsResult";
+      case "GetNextDeparturesResponse":
+        return "DeparturesBoard";
       default:
         return "GetStationBoardResult";
     }

@@ -8,6 +8,7 @@ import {
   getDetailedDepartures,
 } from "@/api/controllers/darwin-base-class-controller";
 import { getServiceDetails } from "@/api/controllers/darwin-base-service-controller";
+import { getNextDepartures } from "../controllers/darwin-linear-departure-controller";
 
 const router = new Router();
 
@@ -110,6 +111,8 @@ router.get("/departures/:crs", getDepartures);
  *         $ref: '#/components/responses/InternalServerError'
  */
 router.get("/departures/:crs/detailed", getDetailedDepartures);
+
+router.get("/departures/:crs/next", getNextDepartures);
 
 /**
  * @swagger

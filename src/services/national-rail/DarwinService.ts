@@ -15,6 +15,13 @@ export type ServiceIdOptions = {
   serviceID: string;
 };
 
+export type LinearDepartureOptions = {
+  crs: string;
+  crsDestinations: string[];
+  timeOffset: string | undefined;
+  timeWindow: string | undefined;
+};
+
 export class DarwinService {
   private readonly apiToken: string;
 
@@ -102,6 +109,15 @@ export class DarwinService {
     const payload = xmlBuilder.getServiceDetails(options);
 
     const data = await this.fetchFromDarwin(payload);
+    return data;
+  }
+
+  async fetchNextDepartures(options: LinearDepartureOptions) {
+    const xmlBuilder = new SoapXmlFactory(this.apiToken);
+    const payload = xmlBuilder.getNextDepartures(options);
+
+    const data = await this.fetchFromDarwin(payload);
+
     return data;
   }
 }
