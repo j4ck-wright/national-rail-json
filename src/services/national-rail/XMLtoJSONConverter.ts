@@ -28,6 +28,29 @@ type StationBoard = {
   busServices?: ServicesContainer;
 };
 
+type DepartureBoardInput = StationBoard & {
+  departures?: {
+    destination?:
+      | {
+          $?: { crs: string };
+          crs?: string;
+          service?: Service | Service[];
+        }
+      | Array<{
+          $?: { crs: string };
+          crs?: string;
+          service?: Service | Service[];
+        }>;
+  };
+};
+
+type DepartureBoard = StationBoard & {
+  departures?: Array<{
+    crs: string;
+    service: Service;
+  }>;
+};
+
 export class XMLtoJSONConverter {
   private xmlString: string;
   private readonly operation: DarwinOperation;
@@ -67,29 +90,68 @@ export class XMLtoJSONConverter {
     return obj;
   };
 
-  private flattenServices(obj?: StationBoard): StationBoard | undefined {
-    if (!obj) return obj;
-
-    const flattenService = (service: Service): Service => {
-      // biome-ignore lint/suspicious/noExplicitAny: <field could be any type here>
-      const flatten = (field?: any) => {
-        if (field && typeof field === "object" && "location" in field) {
-          return { ...field.location };
-        }
-        return field;
-      };
-
-      return {
-        ...service,
-        origin: flatten(service.origin),
-        destination: flatten(service.destination),
-      };
+  private flattenService = (service: Service): Service => {
+    // biome-ignore lint/suspicious/noExplicitAny: <field could be any type here>
+    const flatten = (field?: any) => {
+      if (field && typeof field === "object" && "location" in field) {
+        return { ...field.location };
+      }
+      return field;
     };
+
+    return {
+      ...service,
+      origin: flatten(service.origin),
+      destination: flatten(service.destination),
+    };
+  };
+
+  private flattenDepartures(
+    obj?: DepartureBoardInput,
+  ): DepartureBoard | undefined {
+    if (!obj?.departures?.destination) return obj as DepartureBoard;
+
+    const destination = obj.departures.destination;
+    const result = { ...obj } as DepartureBoard;
+
+    const flattenSingleService = (
+      service: Service | Service[] | undefined,
+    ): Service | undefined => {
+      if (!service) return undefined;
+      if (Array.isArray(service)) {
+        return service.length > 0 ? this.flattenService(service[0]) : undefined;
+      }
+      return this.flattenService(service);
+    };
+
+    if (Array.isArray(destination)) {
+      result.departures = destination
+        .map((dest) => {
+          const crs = dest.$?.crs || dest.crs;
+          const service = flattenSingleService(dest.service);
+          return crs && service ? { crs, service } : null;
+        })
+        .filter(
+          (item): item is { crs: string; service: Service } => item !== null,
+        );
+    } else {
+      const crs = destination.$?.crs || destination.crs;
+      const service = flattenSingleService(destination.service);
+      result.departures = crs && service ? [{ crs, service }] : [];
+    }
+
+    return result;
+  }
+
+  private flattenServices(
+    obj?: StationBoard | DepartureBoardInput,
+  ): StationBoard | DepartureBoardInput | undefined {
+    if (!obj) return obj;
 
     const normalizeAndFlatten = (services: Service | Service[] | undefined) => {
       if (!services) return [];
-      if (Array.isArray(services)) return services.map(flattenService);
-      return [flattenService(services)];
+      if (Array.isArray(services)) return services.map(this.flattenService);
+      return [this.flattenService(services)];
     };
 
     if (obj.trainServices?.service) {
@@ -105,7 +167,7 @@ export class XMLtoJSONConverter {
     return obj;
   }
 
-  async convert(): Promise<StationBoard | undefined> {
+  async convert(): Promise<StationBoard | DepartureBoard | undefined> {
     const rawJson = (await parseStringPromise(this.xmlString, {
       explicitArray: false,
       trim: true,
@@ -123,11 +185,14 @@ export class XMLtoJSONConverter {
 
     const removedNamespaces = this.stripNamespaces(stationBoardData);
     const flattenedResponse = this.flattenServices(removedNamespaces);
+    const flattenedDepartures = this.flattenDepartures(
+      flattenedResponse as DepartureBoardInput,
+    );
 
-    if (flattenedResponse && "$" in flattenedResponse) {
-      delete flattenedResponse["$"];
+    if (flattenedDepartures && "$" in flattenedDepartures) {
+      delete flattenedDepartures["$"];
     }
 
-    return flattenedResponse;
+    return flattenedDepartures;
   }
 }

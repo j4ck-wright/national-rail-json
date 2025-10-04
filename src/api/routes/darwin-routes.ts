@@ -112,6 +112,27 @@ router.get("/departures/:crs", getDepartures);
  */
 router.get("/departures/:crs/detailed", getDetailedDepartures);
 
+/**
+ * @swagger
+ * /departures/{crs}/next:
+ *   get:
+ *     summary: Get next departures for specific destinations
+ *     description: Retrieve the next departure for each specified destination from a station
+ *     tags:
+ *       - Departures
+ *     parameters:
+ *       - $ref: '#/components/parameters/CrsPathParameter'
+ *       - $ref: '#/components/parameters/DestinationCrsParameter'
+ *       - $ref: '#/components/parameters/TimeOffsetParameter'
+ *       - $ref: '#/components/parameters/TimeWindowParameter'
+ *     responses:
+ *       200:
+ *         $ref: '#/components/responses/NextDeparturesResponse'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 router.get("/departures/:crs/next", getNextDepartures);
 
 /**

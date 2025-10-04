@@ -100,6 +100,23 @@ const swaggerDefinition = {
           "The LDBWS service ID of the service to request the details of. The service ID is obtained from a service listed in a StationBoard object returned from any other request.",
         example: "1240973LEEDS___",
       },
+      DestinationCrsParameter: {
+        in: "query",
+        name: "destinationCrs",
+        required: true,
+        schema: {
+          type: "array",
+          items: {
+            type: "string",
+            pattern: "^[A-Za-z]{3}$",
+          },
+        },
+        style: "form",
+        explode: true,
+        description:
+          "One or more destination station CRS codes to get next departures for",
+        example: ["YRK", "DON"],
+      },
     },
     responses: {
       BadRequest: {
@@ -421,6 +438,49 @@ const swaggerDefinition = {
                   ],
                 },
               },
+            },
+          },
+        },
+      },
+      NextDeparturesResponse: {
+        description: "Successful response with next departures data",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              description:
+                "Next departures data converted from Darwin SOAP response",
+            },
+            example: {
+              generatedAt: "2025-10-04T19:52:23.6370346+01:00",
+              locationName: "Leeds",
+              crs: "LDS",
+              platformAvailable: "true",
+              departures: [
+                {
+                  service: {
+                    sta: "19:38",
+                    eta: "On time",
+                    std: "19:54",
+                    etd: "On time",
+                    platform: "16",
+                    operator: "TransPennine Express",
+                    operatorCode: "TP",
+                    serviceType: "train",
+                    serviceID: "1268173LEEDS___",
+                    rsid: "TP908700",
+                    origin: {
+                      locationName: "Liverpool Lime Street",
+                      crs: "LIV",
+                    },
+                    destination: {
+                      locationName: "Redcar Central",
+                      crs: "RCC",
+                    },
+                  },
+                  crs: "YRK",
+                },
+              ],
             },
           },
         },
