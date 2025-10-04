@@ -78,6 +78,17 @@ const swaggerDefinition = {
           "How far into the future in minutes against the current time to provide the station board for. Between -120 and +120 exclusive",
         default: "0",
       },
+      ServiceIdParameter: {
+        in: "path",
+        name: "serviceId",
+        required: true,
+        schema: {
+          type: "string",
+        },
+        description:
+          "The LDBWS service ID of the service to request the details of. The service ID is obtained from a service listed in a StationBoard object returned from any other request.",
+        example: "1240973LEEDS___",
+      },
     },
     responses: {
       BadRequest: {
@@ -89,6 +100,19 @@ const swaggerDefinition = {
             },
             example: {
               error: "Missing 'crs' query parameter",
+            },
+          },
+        },
+      },
+      NotFound: {
+        description: "Resource not found",
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/Error",
+            },
+            example: {
+              error: "Service not found",
             },
           },
         },
@@ -340,6 +364,56 @@ const swaggerDefinition = {
           },
         },
       },
+      ServiceDetailsResponse: {
+        description: "Successful response with service details data",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              description:
+                "Service details data converted from Darwin SOAP response",
+            },
+            example: {
+              generatedAt: "2025-10-04T10:01:09.4478883+01:00",
+              serviceType: "train",
+              locationName: "Leeds",
+              crs: "LDS",
+              operator: "Northern",
+              operatorCode: "NT",
+              platform: "12A",
+              sta: "10:05",
+              std: "10:05",
+              eta: "On time",
+              etd: "On time",
+              length: "4",
+              previousCallingPoints: {
+                callingPointList: {
+                  callingPoint: [
+                    {
+                      locationName: "York",
+                      crs: "YRK",
+                      st: "09:30",
+                      et: "On time",
+                    },
+                  ],
+                },
+              },
+              subsequentCallingPoints: {
+                callingPointList: {
+                  callingPoint: [
+                    {
+                      locationName: "Bradford Interchange",
+                      crs: "BDI",
+                      st: "10:25",
+                      et: "On time",
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        },
+      },
     },
     schemas: {
       ServiceBoardOptions: {
@@ -391,6 +465,17 @@ const swaggerDefinition = {
             description: "Error message",
           },
         },
+      },
+      ServiceIdOptions: {
+        type: "object",
+        properties: {
+          serviceId: {
+            type: "string",
+            description: "Service ID for the train service",
+            example: "1240973LEEDS___",
+          },
+        },
+        required: ["serviceId"],
       },
     },
   },

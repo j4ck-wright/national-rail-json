@@ -1,4 +1,7 @@
-import type { ServiceBoardOptions } from "@/services/national-rail/DarwinService";
+import type {
+  ServiceBoardOptions,
+  ServiceIdOptions,
+} from "@/services/national-rail/DarwinService";
 
 type DarwinMethods =
   | "GetArrivalBoardRequest"
@@ -6,7 +9,8 @@ type DarwinMethods =
   | "GetArrBoardWithDetailsRequest"
   | "GetDepBoardWithDetailsRequest"
   | "GetArrivalDepartureBoardRequest"
-  | "GetArrDepBoardWithDetailsRequest";
+  | "GetArrDepBoardWithDetailsRequest"
+  | "GetServiceDetailsRequest";
 
 export class SoapXmlFactory {
   private readonly soapEnvolopeStart =
@@ -69,7 +73,7 @@ export class SoapXmlFactory {
     method: DarwinMethods,
     options: ServiceBoardOptions,
   ): string {
-    let body =
+    const body =
       this.soapEnvolopeStart +
       this.soapHeader +
       this.soapBodyStart +
@@ -79,9 +83,24 @@ export class SoapXmlFactory {
       this.soapBodyEnd +
       this.soapEnvelopeEnd;
 
-    body = this.interpolateOptions(body, options);
+    return this.interpolateOptions(body, options);
+  }
 
-    return body;
+  private buildServiceSoapRequest(
+    method: DarwinMethods,
+    options: ServiceIdOptions,
+  ): string {
+    const body =
+      this.soapEnvolopeStart +
+      this.soapHeader +
+      this.soapBodyStart +
+      `<ldb:${method}>` +
+      "<ldb:serviceID>%%serviceID%%</ldb:serviceID>" +
+      `</ldb:${method}>` +
+      this.soapBodyEnd +
+      this.soapEnvelopeEnd;
+
+    return this.interpolate(body, "serviceID", options.serviceID);
   }
 
   getArrivals(options: ServiceBoardOptions): string {
@@ -106,5 +125,9 @@ export class SoapXmlFactory {
 
   getDetailedArrivalDepartures(options: ServiceBoardOptions): string {
     return this.buildSoapRequest("GetArrDepBoardWithDetailsRequest", options);
+  }
+
+  getServiceDetails(options: ServiceIdOptions): string {
+    return this.buildServiceSoapRequest("GetServiceDetailsRequest", options);
   }
 }

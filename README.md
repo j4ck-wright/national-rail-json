@@ -34,6 +34,7 @@ GET /departures
 GET /departures/detailed
 GET /arrivals-and-departures
 GET /arrivals-and-departures/detailed
+GET /service:serviceId
 ```
 
 ## Example Usage

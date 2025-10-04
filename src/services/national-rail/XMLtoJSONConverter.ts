@@ -37,6 +37,15 @@ export class XMLtoJSONConverter {
     this.operation = opertation;
   }
 
+  private getResultPropertyName(): string {
+    switch (this.operation) {
+      case "GetServiceDetailsResponse":
+        return "GetServiceDetailsResult";
+      default:
+        return "GetStationBoardResult";
+    }
+  }
+
   private stripNamespaces = (obj: object): object => {
     if (Array.isArray(obj)) {
       return obj.map((item) => this.stripNamespaces(item));
@@ -102,12 +111,13 @@ export class XMLtoJSONConverter {
       mergeAttrs: false,
     })) as {
       "soap:Body": {
-        [K in DarwinOperation]: { GetStationBoardResult: object };
+        [K in DarwinOperation]: { [resultKey: string]: object };
       };
     };
 
+    const resultPropertyName = this.getResultPropertyName();
     const stationBoardData =
-      rawJson["soap:Body"][this.operation]["GetStationBoardResult"];
+      rawJson["soap:Body"][this.operation][resultPropertyName];
 
     const removedNamespaces = this.stripNamespaces(stationBoardData);
     const flattenedResponse = this.flattenServices(removedNamespaces);

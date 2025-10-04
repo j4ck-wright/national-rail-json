@@ -13,7 +13,8 @@ export type DarwinOperation =
   | "GetDepartureBoardResponse"
   | "GetDepBoardWithDetailsResponse"
   | "GetArrivalDepartureBoardResponse"
-  | "GetArrDepBoardWithDetailsResponse";
+  | "GetArrDepBoardWithDetailsResponse"
+  | "GetServiceDetailsResponse";
 
 export type DarwinMethodNames =
   | "fetchArrivals"

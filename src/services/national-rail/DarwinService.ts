@@ -11,6 +11,10 @@ export type ServiceBoardOptions = {
   timeWindow: string | undefined;
 };
 
+export type ServiceIdOptions = {
+  serviceID: string;
+};
+
 export class DarwinService {
   private readonly apiToken: string;
 
@@ -80,7 +84,6 @@ export class DarwinService {
     const xmlBuilder = new SoapXmlFactory(this.apiToken);
 
     const payload = xmlBuilder.getArrivalDepartures(options);
-    console.log(payload);
 
     const data = await this.fetchFromDarwin(payload);
     return data;
@@ -89,6 +92,14 @@ export class DarwinService {
   async fetchDetailedArrivalDepartures(options: ServiceBoardOptions) {
     const xmlBuilder = new SoapXmlFactory(this.apiToken);
     const payload = xmlBuilder.getDetailedArrivalDepartures(options);
+
+    const data = await this.fetchFromDarwin(payload);
+    return data;
+  }
+
+  async fetchServiceDetails(options: ServiceIdOptions) {
+    const xmlBuilder = new SoapXmlFactory(this.apiToken);
+    const payload = xmlBuilder.getServiceDetails(options);
 
     const data = await this.fetchFromDarwin(payload);
     return data;

@@ -7,6 +7,7 @@ import {
   getDetailedArrivals,
   getDetailedDepartures,
 } from "@/api/controllers/darwin-base-class-controller";
+import { getServiceDetails } from "@/api/controllers/darwin-base-service-controller";
 
 const router = new Router();
 
@@ -159,5 +160,23 @@ router.get("/arrivals-and-departures", getArrivalDepartures);
  *         $ref: '#/components/responses/InternalServerError'
  */
 router.get("/arrivals-and-departures/detailed", getDetailedArrivalDeparture);
+
+/**
+ * @swagger
+ * /service/{serviceId}:
+ *   get:
+ *     summary: Get service details by service ID
+ *     description: Retrieve detailed information about a specific train service using its service ID
+ *     tags:
+ *       - Services
+ *     parameters:
+ *       - $ref: '#/components/parameters/ServiceIdParameter'
+ *     responses:
+ *       200:
+ *         $ref: '#/components/responses/ServiceDetailsResponse'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+router.get("/service/:serviceId", getServiceDetails);
 
 export default router;

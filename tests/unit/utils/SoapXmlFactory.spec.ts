@@ -1,4 +1,7 @@
-import type { ServiceBoardOptions } from "@/services/national-rail/DarwinService";
+import type {
+  ServiceBoardOptions,
+  ServiceIdOptions,
+} from "@/services/national-rail/DarwinService";
 import { SoapXmlFactory } from "@/utils/SoapXmlFactory";
 
 describe("SoapXmlFactory", () => {
@@ -23,6 +26,8 @@ describe("SoapXmlFactory", () => {
     ["getDepartures", "GetDepartureBoardRequest"],
     ["getDetailedArrivals", "GetArrBoardWithDetailsRequest"],
     ["getDetailedDepartures", "GetDepBoardWithDetailsRequest"],
+    ["getArrivalDepartures", "GetArrivalDepartureBoardRequest"],
+    ["getDetailedArrivalDepartures", "GetArrDepBoardWithDetailsRequest"],
   ])("should pass all options to XML for %s", (methodName, expectedRequest) => {
     const factory = new SoapXmlFactory("test-token");
     const xml = (
@@ -69,5 +74,23 @@ describe("SoapXmlFactory", () => {
     expect(xml).toContain("typ:AccessToken");
     expect(xml).toContain("<soap:Body>");
     expect(xml.endsWith("</soap:Envelope>")).toBe(true);
+  });
+
+  describe("Service Details", () => {
+    const serviceIdOptions: ServiceIdOptions = {
+      serviceID: "ABC123456789",
+    };
+
+    it("should generate correct XML for getServiceDetails", () => {
+      const factory = new SoapXmlFactory("test-token");
+      const xml = factory.getServiceDetails(serviceIdOptions);
+
+      expect(xml).toContain("<typ:TokenValue>test-token</typ:TokenValue>");
+      expect(xml).toContain("<ldb:GetServiceDetailsRequest>");
+      expect(xml).toContain("</ldb:GetServiceDetailsRequest>");
+      expect(xml).toContain("<ldb:serviceID>ABC123456789</ldb:serviceID>");
+      expect(xml.startsWith("<soap:Envelope")).toBe(true);
+      expect(xml.endsWith("</soap:Envelope>")).toBe(true);
+    });
   });
 });
