@@ -65,6 +65,7 @@ export class XMLtoJSONConverter {
       case "GetServiceDetailsResponse":
         return "GetServiceDetailsResult";
       case "GetNextDeparturesResponse":
+      case "GetNextDeparturesWithDetailsResponse":
         return "DeparturesBoard";
       default:
         return "GetStationBoardResult";

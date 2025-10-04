@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, vi } from "vitest";
 import {
-  BaseServiceIdController,
+  BaseLinearDepartureController,
   type DarwinServiceMethodNames,
   getNextDepartures,
+  getNextDeparturesDetailed,
 } from "@/api/controllers/darwin-linear-departure-controller";
 import { DarwinService } from "@/services/national-rail/DarwinService";
 import { XMLtoJSONConverter } from "@/services/national-rail/XMLtoJSONConverter";
@@ -49,9 +50,14 @@ const TEST_DATA = {
   },
 };
 
-class TestController extends BaseServiceIdController {
+class TestController extends BaseLinearDepartureController {
   protected readonly methodName = "fetchNextDepartures";
   protected readonly responseType = "GetNextDeparturesResponse";
+}
+
+class TestDetailedController extends BaseLinearDepartureController {
+  protected readonly methodName = "fetchNextDeparturesWithDetails";
+  protected readonly responseType = "GetNextDeparturesWithDetailsResponse";
 }
 
 type MockContext = {
@@ -78,6 +84,7 @@ function createMockContext(
 function setupMockServices() {
   const mockDarwinService = {
     fetchNextDepartures: vi.fn(),
+    fetchNextDeparturesWithDetails: vi.fn(),
   };
 
   const mockXMLtoJSONConverter = {
@@ -103,6 +110,9 @@ function setupSuccessfulResponse(
   mockDarwinService.fetchNextDepartures.mockResolvedValue(
     TEST_DATA.mockXmlResponse,
   );
+  mockDarwinService.fetchNextDeparturesWithDetails.mockResolvedValue(
+    TEST_DATA.mockXmlResponse,
+  );
   mockXMLtoJSONConverter.convert.mockResolvedValue(TEST_DATA.mockJsonResponse);
 }
 
@@ -110,7 +120,7 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-describe("BaseServiceIdController", () => {
+describe("BaseLinearDepartureController", () => {
   it("should have correct method mapping for fetchNextDepartures", async () => {
     const { mockDarwinService, mockXMLtoJSONConverter } = setupMockServices();
     setupSuccessfulResponse(mockDarwinService, mockXMLtoJSONConverter);
@@ -127,10 +137,26 @@ describe("BaseServiceIdController", () => {
     expect(result).toBe(TEST_DATA.mockXmlResponse);
   });
 
+  it("should have correct method mapping for fetchNextDeparturesWithDetails", async () => {
+    const { mockDarwinService, mockXMLtoJSONConverter } = setupMockServices();
+    setupSuccessfulResponse(mockDarwinService, mockXMLtoJSONConverter);
+
+    const controller = new TestDetailedController();
+    const result = await controller["fetchServiceData"](
+      mockDarwinService as unknown as DarwinService,
+      TEST_DATA.linearDepartureOptions,
+    );
+
+    expect(
+      mockDarwinService.fetchNextDeparturesWithDetails,
+    ).toHaveBeenCalledWith(TEST_DATA.linearDepartureOptions);
+    expect(result).toBe(TEST_DATA.mockXmlResponse);
+  });
+
   it("should throw error for invalid method name", async () => {
     const { mockDarwinService } = setupMockServices();
 
-    class InvalidController extends BaseServiceIdController {
+    class InvalidController extends BaseLinearDepartureController {
       protected readonly methodName =
         "invalidMethod" as DarwinServiceMethodNames;
       protected readonly responseType = "GetNextDeparturesResponse";
@@ -356,6 +382,60 @@ describe("getNextDepartures exported function", () => {
     await getNextDepartures(mockContext as unknown as import("koa").Context);
 
     expect(mockDarwinService.fetchNextDepartures).toHaveBeenCalledWith({
+      crs: "LDS",
+      crsDestinations: ["YRK", "DON"],
+      timeOffset: "30",
+      timeWindow: "120",
+    });
+  });
+});
+
+describe("getNextDeparturesDetailed exported function", () => {
+  it("should call controller handle method", async () => {
+    const { mockDarwinService, mockXMLtoJSONConverter } = setupMockServices();
+    setupSuccessfulResponse(mockDarwinService, mockXMLtoJSONConverter);
+
+    const mockContext = createMockContext(
+      { destinationCrs: ["YRK", "DON"] },
+      { crs: "LDS" },
+    );
+
+    await getNextDeparturesDetailed(
+      mockContext as unknown as import("koa").Context,
+    );
+
+    expect(
+      mockDarwinService.fetchNextDeparturesWithDetails,
+    ).toHaveBeenCalledWith({
+      crs: "LDS",
+      crsDestinations: ["YRK", "DON"],
+      timeOffset: undefined,
+      timeWindow: undefined,
+    });
+    expect(mockContext.status).toBe(200);
+    expect(mockContext.body).toBe(TEST_DATA.mockJsonResponse);
+  });
+
+  it("should handle array query parameter selection", async () => {
+    const { mockDarwinService, mockXMLtoJSONConverter } = setupMockServices();
+    setupSuccessfulResponse(mockDarwinService, mockXMLtoJSONConverter);
+
+    const mockContext = createMockContext(
+      {
+        destinationCrs: ["YRK", "DON"],
+        timeOffset: ["30", "60"],
+        timeWindow: "120",
+      },
+      { crs: "LDS" },
+    );
+
+    await getNextDeparturesDetailed(
+      mockContext as unknown as import("koa").Context,
+    );
+
+    expect(
+      mockDarwinService.fetchNextDeparturesWithDetails,
+    ).toHaveBeenCalledWith({
       crs: "LDS",
       crsDestinations: ["YRK", "DON"],
       timeOffset: "30",

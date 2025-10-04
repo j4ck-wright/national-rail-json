@@ -15,7 +15,8 @@ export type DarwinOperation =
   | "GetArrivalDepartureBoardResponse"
   | "GetArrDepBoardWithDetailsResponse"
   | "GetServiceDetailsResponse"
-  | "GetNextDeparturesResponse";
+  | "GetNextDeparturesResponse"
+  | "GetNextDeparturesWithDetailsResponse";
 
 export type DarwinMethodNames =
   | "fetchArrivals"
@@ -24,7 +25,8 @@ export type DarwinMethodNames =
   | "fetchDetailedDepartures"
   | "fetchArrivalDepartureBoard"
   | "fetchDetailedArrivalsDepartures"
-  | "fetchNextDepartures";
+  | "fetchNextDepartures"
+  | "fetchNextDeparturesWithDetails";
 
 export abstract class BaseServiceController {
   protected abstract readonly methodName: DarwinMethodNames;

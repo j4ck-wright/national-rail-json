@@ -8,9 +8,11 @@ import { XMLtoJSONConverter } from "@/services/national-rail/XMLtoJSONConverter"
 import { config } from "@/utils/config";
 import type { DarwinOperation } from "./darwin-class-controller";
 
-export type DarwinServiceMethodNames = "fetchNextDepartures";
+export type DarwinServiceMethodNames =
+  | "fetchNextDepartures"
+  | "fetchNextDeparturesWithDetails";
 
-export abstract class BaseServiceIdController {
+export abstract class BaseLinearDepartureController {
   protected abstract readonly methodName: DarwinServiceMethodNames;
   protected abstract readonly responseType: DarwinOperation;
 
@@ -21,6 +23,8 @@ export abstract class BaseServiceIdController {
     switch (this.methodName) {
       case "fetchNextDepartures":
         return await darwinService.fetchNextDepartures(options);
+      case "fetchNextDeparturesWithDetails":
+        return await darwinService.fetchNextDeparturesWithDetails(options);
       default:
         throw new Error(`Invalid method name: ${this.methodName}`);
     }
@@ -90,12 +94,22 @@ export abstract class BaseServiceIdController {
   }
 }
 
-class NextDepartureController extends BaseServiceIdController {
+class NextDepartureController extends BaseLinearDepartureController {
   protected readonly methodName = "fetchNextDepartures";
   protected readonly responseType = "GetNextDeparturesResponse";
+}
+
+class NextDepartureDetailedController extends BaseLinearDepartureController {
+  protected readonly methodName = "fetchNextDeparturesWithDetails";
+  protected readonly responseType = "GetNextDeparturesWithDetailsResponse";
 }
 
 const nextDepartureController = new NextDepartureController();
 
 export const getNextDepartures = (ctx: Context) =>
   nextDepartureController.handle(ctx);
+
+export const getNextDeparturesDetailed = (ctx: Context) => {
+  const nextDepartureDetailedController = new NextDepartureDetailedController();
+  return nextDepartureDetailedController.handle(ctx);
+};

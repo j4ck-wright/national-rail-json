@@ -12,7 +12,8 @@ type DarwinMethods =
   | "GetArrivalDepartureBoardRequest"
   | "GetArrDepBoardWithDetailsRequest"
   | "GetServiceDetailsRequest"
-  | "GetNextDeparturesRequest";
+  | "GetNextDeparturesRequest"
+  | "GetNextDeparturesWithDetailsRequest";
 
 export class SoapXmlFactory {
   private readonly soapEnvolopeStart =
@@ -178,5 +179,12 @@ export class SoapXmlFactory {
 
   getNextDepartures(options: LinearDepartureOptions) {
     return this.buildDepartureSoapRequest("GetNextDeparturesRequest", options);
+  }
+
+  getNextDeparturesWithDetails(options: LinearDepartureOptions) {
+    return this.buildDepartureSoapRequest(
+      "GetNextDeparturesWithDetailsRequest",
+      options,
+    );
   }
 }
