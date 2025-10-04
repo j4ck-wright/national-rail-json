@@ -484,8 +484,8 @@ router.get("/departures", getDepartures);
  */
 router.get("/departures/detailed", getDetailedDepartures);
 
-router.get("/arrivals_and_departures", getArrivalDepartures);
+router.get("/arrivals-and-departures", getArrivalDepartures);
 
-router.get("/arrivals_and_departures/detailed", getDetailedArrivalDeparture);
+router.get("/arrivals-and-departures/detailed", getDetailedArrivalDeparture);
 
 export default router;
