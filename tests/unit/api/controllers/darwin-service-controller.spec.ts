@@ -1,10 +1,10 @@
 import { beforeEach, expect, test, vi } from "vitest";
-import type { DarwinOperation } from "@/api/controllers/darwin-base-class-controller";
+import type { DarwinOperation } from "@/api/controllers/darwin-class-controller";
 import {
   BaseServiceIdController,
   type DarwinServiceMethodNames,
   getServiceDetails,
-} from "@/api/controllers/darwin-base-service-controller";
+} from "@/api/controllers/darwin-service-controller";
 import { DarwinService } from "@/services/national-rail/DarwinService";
 import { XMLtoJSONConverter } from "@/services/national-rail/XMLtoJSONConverter";
 

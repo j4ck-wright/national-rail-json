@@ -6,7 +6,7 @@ import {
 } from "@/services/national-rail/DarwinService";
 import { XMLtoJSONConverter } from "@/services/national-rail/XMLtoJSONConverter";
 import { config } from "@/utils/config";
-import type { DarwinOperation } from "./darwin-base-class-controller";
+import type { DarwinOperation } from "./darwin-class-controller";
 
 export type DarwinServiceMethodNames = "fetchNextDepartures";
 

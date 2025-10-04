@@ -6,8 +6,8 @@ import {
   getDetailedArrivalDeparture,
   getDetailedArrivals,
   getDetailedDepartures,
-} from "@/api/controllers/darwin-base-class-controller";
-import { getServiceDetails } from "@/api/controllers/darwin-base-service-controller";
+} from "@/api/controllers/darwin-class-controller";
+import { getServiceDetails } from "@/api/controllers/darwin-service-controller";
 import { getNextDepartures } from "../controllers/darwin-linear-departure-controller";
 
 const router = new Router();

@@ -1,5 +1,5 @@
 import { parseStringPromise } from "xml2js";
-import type { DarwinOperation } from "@/api/controllers/darwin-base-class-controller";
+import type { DarwinOperation } from "@/api/controllers/darwin-class-controller";
 
 type Service = {
   sta?: string;
