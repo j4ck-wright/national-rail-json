@@ -1,7 +1,9 @@
 import Router from "@koa/router";
 import {
+  getArrivalDepartures,
   getArrivals,
   getDepartures,
+  getDetailedArrivalDeparture,
   getDetailedArrivals,
   getDetailedDepartures,
 } from "@/api/controllers/darwin-base-class-controller";
@@ -481,5 +483,9 @@ router.get("/departures", getDepartures);
  *               error: "Internal server error"
  */
 router.get("/departures/detailed", getDetailedDepartures);
+
+router.get("/arrivals_and_departures", getArrivalDepartures);
+
+router.get("/arrivals_and_departures/detailed", getDetailedArrivalDeparture);
 
 export default router;

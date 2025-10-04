@@ -11,13 +11,17 @@ export type DarwinOperation =
   | "GetArrivalBoardResponse"
   | "GetArrBoardWithDetailsResponse"
   | "GetDepartureBoardResponse"
-  | "GetDepBoardWithDetailsResponse";
+  | "GetDepBoardWithDetailsResponse"
+  | "GetArrivalDepartureBoardResponse"
+  | "GetArrDepBoardWithDetailsResponse";
 
 export type DarwinMethodNames =
   | "fetchArrivals"
   | "fetchDepartures"
   | "fetchDetailedArrivals"
-  | "fetchDetailedDepartures";
+  | "fetchDetailedDepartures"
+  | "fetchArrivalDepartureBoard"
+  | "fetchDetailedArrivalsDepartures";
 
 export abstract class BaseServiceController {
   protected abstract readonly methodName: DarwinMethodNames;
@@ -36,6 +40,10 @@ export abstract class BaseServiceController {
         return await darwinService.fetchDetailedArrivals(options);
       case "fetchDetailedDepartures":
         return await darwinService.fetchDetailedDepartures(options);
+      case "fetchArrivalDepartureBoard":
+        return await darwinService.fetchArrivalsDepartures(options);
+      case "fetchDetailedArrivalsDepartures":
+        return await darwinService.fetchDetailedArrivalDepartures(options);
       default:
         throw new Error(`Invalid method name: ${this.methodName}`);
     }
@@ -122,10 +130,23 @@ class DetailedDeparturesController extends BaseServiceController {
   protected readonly responseType = "GetDepBoardWithDetailsResponse";
 }
 
+class ArrivalDepartureController extends BaseServiceController {
+  protected readonly methodName = "fetchArrivalDepartureBoard";
+  protected readonly responseType = "GetArrivalDepartureBoardResponse";
+}
+
+class DetailedArrivalDepartureController extends BaseServiceController {
+  protected readonly methodName = "fetchDetailedArrivalsDepartures";
+  protected readonly responseType = "GetArrDepBoardWithDetailsResponse";
+}
+
 const arrivalsController = new ArrivalsController();
 const departuresController = new DeparturesController();
 const detailedArrivalsController = new DetailedArrivalsController();
 const detailedDeparturesController = new DetailedDeparturesController();
+const arrivalDepartureController = new ArrivalDepartureController();
+const detailedArrivalDepartureController =
+  new DetailedArrivalDepartureController();
 
 export const getArrivals = (ctx: Context) => arrivalsController.handle(ctx);
 export const getDepartures = (ctx: Context) => departuresController.handle(ctx);
@@ -133,3 +154,7 @@ export const getDetailedArrivals = (ctx: Context) =>
   detailedArrivalsController.handle(ctx);
 export const getDetailedDepartures = (ctx: Context) =>
   detailedDeparturesController.handle(ctx);
+export const getArrivalDepartures = (ctx: Context) =>
+  arrivalDepartureController.handle(ctx);
+export const getDetailedArrivalDeparture = (ctx: Context) =>
+  detailedArrivalDepartureController.handle(ctx);
