@@ -35,32 +35,42 @@ const TEST_DATA = {
     crs: "LON",
     numRows: "15",
     filterCrs: "BHM",
-    filterType: "to" as const,
+    filterType: "to",
     timeOffset: "30",
     timeWindow: "120",
   },
-} as const;
+};
 
 const CONTROLLER_TEST_CASES = [
   {
-    methodName: "fetchArrivals" as DarwinMethodNames,
-    responseType: "GetArrivalBoardResponse" as DarwinOperation,
-    mockMethod: "fetchArrivals" as DarwinMethodNames,
+    methodName: "fetchArrivals",
+    responseType: "GetArrivalBoardResponse",
+    serviceMethod: "fetchArrivals",
   },
   {
-    methodName: "fetchDepartures" as DarwinMethodNames,
-    responseType: "GetDepartureBoardResponse" as DarwinOperation,
-    mockMethod: "fetchDepartures" as DarwinMethodNames,
+    methodName: "fetchDepartures",
+    responseType: "GetDepartureBoardResponse",
+    serviceMethod: "fetchDepartures",
   },
   {
-    methodName: "fetchDetailedArrivals" as DarwinMethodNames,
-    responseType: "GetArrBoardWithDetailsResponse" as DarwinOperation,
-    mockMethod: "fetchDetailedArrivals" as DarwinMethodNames,
+    methodName: "fetchDetailedArrivals",
+    responseType: "GetArrBoardWithDetailsResponse",
+    serviceMethod: "fetchDetailedArrivals",
   },
   {
-    methodName: "fetchDetailedDepartures" as DarwinMethodNames,
-    responseType: "GetDepBoardWithDetailsResponse" as DarwinOperation,
-    mockMethod: "fetchDetailedDepartures" as DarwinMethodNames,
+    methodName: "fetchDetailedDepartures",
+    responseType: "GetDepBoardWithDetailsResponse",
+    serviceMethod: "fetchDetailedDepartures",
+  },
+  {
+    methodName: "fetchArrivalDepartureBoard",
+    responseType: "GetArrivalDepartureBoardResponse",
+    serviceMethod: "fetchArrivalsDepartures",
+  },
+  {
+    methodName: "fetchDetailedArrivalsDepartures",
+    responseType: "GetArrDepBoardWithDetailsResponse",
+    serviceMethod: "fetchDetailedArrivalDepartures",
   },
 ] as const;
 
@@ -68,32 +78,32 @@ const EXPORTED_FUNCTION_TEST_CASES = [
   {
     functionName: "getArrivals",
     function: getArrivals,
-    mockMethod: "fetchArrivals" as const,
+    serviceMethod: "fetchArrivals",
     expectedResponseType: "GetArrivalBoardResponse",
   },
   {
     functionName: "getDepartures",
     function: getDepartures,
-    mockMethod: "fetchDepartures" as const,
+    serviceMethod: "fetchDepartures",
     expectedResponseType: "GetDepartureBoardResponse",
   },
   {
     functionName: "getDetailedArrivals",
     function: getDetailedArrivals,
-    mockMethod: "fetchDetailedArrivals" as const,
+    serviceMethod: "fetchDetailedArrivals",
     expectedResponseType: "GetArrBoardWithDetailsResponse",
   },
   {
     functionName: "getDetailedDepartures",
     function: getDetailedDepartures,
-    mockMethod: "fetchDetailedDepartures" as const,
+    serviceMethod: "fetchDetailedDepartures",
     expectedResponseType: "GetDepBoardWithDetailsResponse",
   },
 ] as const;
 
 class TestController extends BaseServiceController {
-  protected readonly methodName = "fetchArrivals" as const;
-  protected readonly responseType = "GetArrivalBoardResponse" as const;
+  protected readonly methodName = "fetchArrivals";
+  protected readonly responseType = "GetArrivalBoardResponse";
 }
 
 function createMockContext(query: Record<string, string | string[]> = {}) {
@@ -110,6 +120,8 @@ function setupMockServices() {
     fetchDepartures: vi.fn(),
     fetchDetailedArrivals: vi.fn(),
     fetchDetailedDepartures: vi.fn(),
+    fetchArrivalsDepartures: vi.fn(),
+    fetchDetailedArrivalDepartures: vi.fn(),
   };
 
   const mockXMLtoJSONConverter = {
@@ -142,6 +154,12 @@ function setupSuccessfulResponse(
   mockDarwinService.fetchDetailedDepartures.mockResolvedValue(
     TEST_DATA.mockXmlResponse,
   );
+  mockDarwinService.fetchArrivalsDepartures.mockResolvedValue(
+    TEST_DATA.mockXmlResponse,
+  );
+  mockDarwinService.fetchDetailedArrivalDepartures.mockResolvedValue(
+    TEST_DATA.mockXmlResponse,
+  );
   mockXMLtoJSONConverter.convert.mockResolvedValue(TEST_DATA.mockJsonResponse);
 }
 
@@ -163,8 +181,8 @@ describe("DarwinBaseClassController", () => {
   describe("BaseServiceController", () => {
     describe("fetchServiceData", () => {
       test.each(CONTROLLER_TEST_CASES)(
-        'should call darwinService.$mockMethod when methodName is "$methodName"',
-        async ({ methodName, responseType, mockMethod }) => {
+        'should call darwinService.$serviceMethod when methodName is "$methodName"',
+        async ({ methodName, responseType, serviceMethod }) => {
           class TestController extends BaseServiceController {
             protected readonly methodName = methodName;
             protected readonly responseType = responseType;
@@ -175,7 +193,7 @@ describe("DarwinBaseClassController", () => {
             crs: TEST_DATA.validCrs,
             numRows: TEST_DATA.defaultNumRows,
           };
-          mockDarwinService[mockMethod].mockResolvedValue(
+          mockDarwinService[serviceMethod].mockResolvedValue(
             TEST_DATA.mockXmlResponse,
           );
 
@@ -188,7 +206,9 @@ describe("DarwinBaseClassController", () => {
             }
           ).fetchServiceData(mockDarwinService, options);
 
-          expect(mockDarwinService[mockMethod]).toHaveBeenCalledWith(options);
+          expect(mockDarwinService[serviceMethod]).toHaveBeenCalledWith(
+            options,
+          );
           expect(result).toBe(TEST_DATA.mockXmlResponse);
         },
       );
@@ -471,11 +491,15 @@ describe("DarwinBaseClassController", () => {
 
     test.each(EXPORTED_FUNCTION_TEST_CASES)(
       "$functionName should call controller.handle with context",
-      async ({ function: testFunction, mockMethod, expectedResponseType }) => {
+      async ({
+        function: testFunction,
+        serviceMethod,
+        expectedResponseType,
+      }) => {
         await testFunction(mockContext as import("koa").Context);
 
         expect(MockedDarwinService).toHaveBeenCalledWith(TEST_DATA.mockToken);
-        expect(mockDarwinService[mockMethod]).toHaveBeenCalled();
+        expect(mockDarwinService[serviceMethod]).toHaveBeenCalled();
         expect(MockedXMLtoJSONConverter).toHaveBeenCalledWith(
           TEST_DATA.mockXmlResponse,
           expectedResponseType,
