@@ -35,6 +35,7 @@ GET /arrivals/:crs
 GET /arrivals/:crs/detailed
 GET /departures/:crs
 GET /departures/:crs/detailed
+GET /departures/:crs/next
 GET /arrivals-and-departures/:crs
 GET /arrivals-and-departures/:crs/detailed
 GET /service/:serviceId
@@ -51,6 +52,9 @@ curl "http://localhost:3000/arrivals/BDI?filterCrs=LDS&filterType=from"
 
 # Get service details about an existing train (obtained via a ServiceBoard)
 curl "http://localhost:3000/service/1266343LEEDS___"
+
+# Get next departing train from Leeds to Doncaster or London
+curl "http://localhost:3000/departures/LDS/next?destinationCrs=DON&destinationCrs=KGX
 ```
 
 ## Getting Started

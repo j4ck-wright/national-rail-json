@@ -1,4 +1,5 @@
 import type {
+  LinearDepartureOptions,
   ServiceBoardOptions,
   ServiceIdOptions,
 } from "@/services/national-rail/DarwinService";
@@ -10,7 +11,9 @@ type DarwinMethods =
   | "GetDepBoardWithDetailsRequest"
   | "GetArrivalDepartureBoardRequest"
   | "GetArrDepBoardWithDetailsRequest"
-  | "GetServiceDetailsRequest";
+  | "GetServiceDetailsRequest"
+  | "GetNextDeparturesRequest"
+  | "GetNextDeparturesWithDetailsRequest";
 
 export class SoapXmlFactory {
   private readonly soapEnvolopeStart =
@@ -28,6 +31,14 @@ export class SoapXmlFactory {
 
   private readonly soapEnvelopeEnd = `</soap:Envelope>`;
 
+  private buildDeparturesDestinationList(destinationCrs: string[]) {
+    const crsElements = destinationCrs
+      .map((crs) => `<ldb:crs>${crs}</ldb:crs>`)
+      .join("\n");
+
+    return `<ldb:filterList>${crsElements}</ldb:filterList>`;
+  }
+
   private readonly serviceBoardOptions =
     "\n" +
     `<ldb:numRows>%%numRows%%</ldb:numRows>` +
@@ -37,6 +48,16 @@ export class SoapXmlFactory {
     `<ldb:filterCrs>%%filterCrs%%</ldb:filterCrs>` +
     "\n" +
     `<ldb:filterType>%%filterType%%</ldb:filterType>` +
+    "\n" +
+    `<ldb:timeOffset>%%timeOffset%%</ldb:timeOffset>` +
+    "\n" +
+    `<ldb:timeWindow>%%timeWindow%%</ldb:timeWindow>`;
+
+  private readonly departureBoardOptions =
+    "\n" +
+    "<ldb:crs>%%crs%%</ldb:crs>" +
+    "\n" +
+    "%%destinationList%%" +
     "\n" +
     `<ldb:timeOffset>%%timeOffset%%</ldb:timeOffset>` +
     "\n" +
@@ -103,6 +124,31 @@ export class SoapXmlFactory {
     return this.interpolate(body, "serviceID", options.serviceID);
   }
 
+  private buildDepartureSoapRequest(
+    method: DarwinMethods,
+    options: LinearDepartureOptions,
+  ) {
+    let body =
+      this.soapEnvolopeStart +
+      this.soapHeader +
+      this.soapBodyStart +
+      `<ldb:${method}>` +
+      this.departureBoardOptions +
+      `</ldb:${method}>` +
+      this.soapBodyEnd +
+      this.soapEnvelopeEnd;
+
+    body = this.interpolate(body, "crs", options.crs);
+    body = this.interpolate(body, "timeOffset", options.timeOffset);
+    body = this.interpolate(body, "timeWindow", options.timeWindow);
+    body = body.replace(
+      "%%destinationList%%",
+      this.buildDeparturesDestinationList(options.crsDestinations),
+    );
+
+    return body;
+  }
+
   getArrivals(options: ServiceBoardOptions): string {
     return this.buildSoapRequest("GetArrivalBoardRequest", options);
   }
@@ -129,5 +175,16 @@ export class SoapXmlFactory {
 
   getServiceDetails(options: ServiceIdOptions): string {
     return this.buildServiceSoapRequest("GetServiceDetailsRequest", options);
+  }
+
+  getNextDepartures(options: LinearDepartureOptions) {
+    return this.buildDepartureSoapRequest("GetNextDeparturesRequest", options);
+  }
+
+  getNextDeparturesWithDetails(options: LinearDepartureOptions) {
+    return this.buildDepartureSoapRequest(
+      "GetNextDeparturesWithDetailsRequest",
+      options,
+    );
   }
 }

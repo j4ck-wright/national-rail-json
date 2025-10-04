@@ -7,7 +7,7 @@ import {
   getDepartures,
   getDetailedArrivals,
   getDetailedDepartures,
-} from "@/api/controllers/darwin-base-class-controller";
+} from "@/api/controllers/darwin-class-controller";
 import { DarwinService } from "@/services/national-rail/DarwinService";
 import { XMLtoJSONConverter } from "@/services/national-rail/XMLtoJSONConverter";
 
