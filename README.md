@@ -32,6 +32,8 @@ GET /arrivals
 GET /arrivals/detailed
 GET /departures
 GET /departures/detailed
+GET /arrivals-and-departures
+GET /arrivals-and-departures/detailed
 ```
 
 ## Example Usage
