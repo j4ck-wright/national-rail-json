@@ -37,8 +37,8 @@ GET /departures/:crs
 GET /departures/:crs/detailed
 GET /departures/:crs/next
 GET /departures/:crs/next/detailed
-GET /arrivals-and-departures/:crs
-GET /arrivals-and-departures/:crs/detailed
+GET /all/:crs
+GET /all/:crs/detailed
 GET /service/:serviceId
 ```
 

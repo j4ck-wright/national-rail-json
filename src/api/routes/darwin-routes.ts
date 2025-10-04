@@ -142,7 +142,7 @@ router.get("/departures/:crs/next/detailed", getNextDeparturesDetailed);
 
 /**
  * @swagger
- * /arrivals-and-departures/{crs}:
+ * /all/{crs}:
  *   get:
  *     summary: Get combined arrival and departure board for a station
  *     description: Retrieve both arrivals and departures board for a specific station from National Rail
@@ -163,11 +163,11 @@ router.get("/departures/:crs/next/detailed", getNextDeparturesDetailed);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get("/arrivals-and-departures/:crs", getArrivalDepartures);
+router.get("/all/:crs", getArrivalDepartures);
 
 /**
  * @swagger
- * /arrivals-and-departures/{crs}/detailed:
+ * /all/{crs}/detailed:
  *   get:
  *     summary: Get detailed combined arrival and departure board for a station
  *     description: Retrieve detailed combined arrivals and departures board with service information for a specific station from National Rail
@@ -188,10 +188,7 @@ router.get("/arrivals-and-departures/:crs", getArrivalDepartures);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get(
-  "/arrivals-and-departures/:crs/detailed",
-  getDetailedArrivalDeparture,
-);
+router.get("/all/:crs/detailed", getDetailedArrivalDeparture);
 
 /**
  * @swagger
