@@ -73,7 +73,7 @@ export abstract class BaseServiceController {
     const query = ctx.request.query;
 
     const options: ServiceBoardOptions = {
-      crs: this.getQueryParam(query, "crs"),
+      crs: ctx["params"]["crs"],
       numRows: this.getQueryParam(query, "numRows") ?? "10",
       filterCrs: this.getQueryParam(query, "filterCrs"),
       filterType: this.getValidFilterType(
@@ -85,7 +85,7 @@ export abstract class BaseServiceController {
 
     if (!options.crs) {
       ctx.status = 400;
-      ctx.body = { error: "Missing 'crs' query parameter" };
+      ctx.body = { error: "Missing 'crs' path parameter" };
       return;
     }
 

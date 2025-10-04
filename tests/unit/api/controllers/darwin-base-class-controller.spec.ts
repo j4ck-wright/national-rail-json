@@ -106,9 +106,13 @@ class TestController extends BaseServiceController {
   protected readonly responseType = "GetArrivalBoardResponse";
 }
 
-function createMockContext(query: Record<string, string | string[]> = {}) {
+function createMockContext(
+  query: Record<string, string | string[]> = {},
+  params: Record<string, string> = {},
+) {
   return {
     request: { query },
+    params,
     status: 0,
     body: null,
   };
@@ -288,23 +292,27 @@ describe("DarwinBaseClassController", () => {
         mockContext = createMockContext();
       });
 
-      it("should return 400 error when crs query parameter is missing", async () => {
+      it("should return 400 error when crs path parameter is missing", async () => {
         const controller = new TestController();
-        mockContext = createMockContext({});
+        mockContext = createMockContext({}, {});
 
-        await controller.handle(mockContext as import("koa").Context);
+        await controller.handle(
+          mockContext as unknown as import("koa").Context,
+        );
 
         expect(mockContext.status).toBe(400);
         expect(mockContext.body).toEqual({
-          error: "Missing 'crs' query parameter",
+          error: "Missing 'crs' path parameter",
         });
       });
 
       it("should return 400 error when crs length is not 3 characters", async () => {
         const controller = new TestController();
-        mockContext = createMockContext({ crs: TEST_DATA.invalidCrs });
+        mockContext = createMockContext({}, { crs: TEST_DATA.invalidCrs });
 
-        await controller.handle(mockContext as import("koa").Context);
+        await controller.handle(
+          mockContext as unknown as import("koa").Context,
+        );
 
         expect(mockContext.status).toBe(400);
         expect(mockContext.body).toEqual({ error: "invalid 'crs'" });
@@ -312,10 +320,12 @@ describe("DarwinBaseClassController", () => {
 
       it("should convert crs to uppercase", async () => {
         const controller = new TestController();
-        mockContext = createMockContext({ crs: "lon" });
+        mockContext = createMockContext({}, { crs: "lon" });
         setupSuccessfulResponse(mockDarwinService, mockXMLtoJSONConverter);
 
-        await controller.handle(mockContext as import("koa").Context);
+        await controller.handle(
+          mockContext as unknown as import("koa").Context,
+        );
 
         expect(MockedDarwinService).toHaveBeenCalledWith(TEST_DATA.mockToken);
         expect(mockDarwinService.fetchArrivals).toHaveBeenCalledWith(
@@ -325,10 +335,12 @@ describe("DarwinBaseClassController", () => {
 
       it('should use default numRows of "10" when not provided', async () => {
         const controller = new TestController();
-        mockContext = createMockContext({ crs: TEST_DATA.validCrs });
+        mockContext = createMockContext({}, { crs: TEST_DATA.validCrs });
         setupSuccessfulResponse(mockDarwinService, mockXMLtoJSONConverter);
 
-        await controller.handle(mockContext as import("koa").Context);
+        await controller.handle(
+          mockContext as unknown as import("koa").Context,
+        );
 
         expect(mockDarwinService.fetchArrivals).toHaveBeenCalledWith(
           expect.objectContaining({ numRows: TEST_DATA.defaultNumRows }),
@@ -337,45 +349,53 @@ describe("DarwinBaseClassController", () => {
 
       it("should pick the first query parameter if user gives an array", async () => {
         const controller = new TestController();
-        mockContext.request.query = {
-          crs: ["LON", "BHM"],
-          numRows: "15",
-        };
+        mockContext = createMockContext(
+          { numRows: ["15", "20"] },
+          { crs: "LON" },
+        );
         mockDarwinService.fetchArrivals.mockResolvedValue("mock-xml");
         mockXMLtoJSONConverter.convert.mockResolvedValue({ data: "mock-json" });
 
-        await controller.handle(mockContext as import("koa").Context);
+        await controller.handle(
+          mockContext as unknown as import("koa").Context,
+        );
 
         expect(mockDarwinService.fetchArrivals).toHaveBeenCalledWith(
-          expect.objectContaining({ crs: "LON" }),
+          expect.objectContaining({ crs: "LON", numRows: "15" }),
         );
       });
 
       it("should create DarwinService with correct token", async () => {
         const controller = new TestController();
-        mockContext.request.query = { crs: "LON" };
+        mockContext = createMockContext({}, { crs: "LON" });
         mockDarwinService.fetchArrivals.mockResolvedValue("mock-xml");
         mockXMLtoJSONConverter.convert.mockResolvedValue({ data: "mock-json" });
 
-        await controller.handle(mockContext as import("koa").Context);
+        await controller.handle(
+          mockContext as unknown as import("koa").Context,
+        );
 
         expect(MockedDarwinService).toHaveBeenCalledWith("mock-token");
       });
 
       it("should fetch service data using the correct options", async () => {
         const controller = new TestController();
-        mockContext.request.query = {
-          crs: "LON",
-          numRows: "15",
-          filterCrs: "BHM",
-          filterType: "to",
-          timeOffset: "30",
-          timeWindow: "120",
-        };
+        mockContext = createMockContext(
+          {
+            numRows: "15",
+            filterCrs: "BHM",
+            filterType: "to",
+            timeOffset: "30",
+            timeWindow: "120",
+          },
+          { crs: "LON" },
+        );
         mockDarwinService.fetchArrivals.mockResolvedValue("mock-xml");
         mockXMLtoJSONConverter.convert.mockResolvedValue({ data: "mock-json" });
 
-        await controller.handle(mockContext as import("koa").Context);
+        await controller.handle(
+          mockContext as unknown as import("koa").Context,
+        );
 
         expect(mockDarwinService.fetchArrivals).toHaveBeenCalledWith({
           crs: "LON",
@@ -389,11 +409,13 @@ describe("DarwinBaseClassController", () => {
 
       it("should convert XML response to JSON using XMLtoJSONConverter", async () => {
         const controller = new TestController();
-        mockContext.request.query = { crs: "LON" };
+        mockContext = createMockContext({}, { crs: "LON" });
         mockDarwinService.fetchArrivals.mockResolvedValue("mock-xml-response");
         mockXMLtoJSONConverter.convert.mockResolvedValue({ data: "mock-json" });
 
-        await controller.handle(mockContext as import("koa").Context);
+        await controller.handle(
+          mockContext as unknown as import("koa").Context,
+        );
 
         expect(MockedXMLtoJSONConverter).toHaveBeenCalledWith(
           "mock-xml-response",
@@ -404,12 +426,14 @@ describe("DarwinBaseClassController", () => {
 
       it("should return JSON data with 200 status on success", async () => {
         const controller = new TestController();
-        mockContext.request.query = { crs: "LON" };
+        mockContext = createMockContext({}, { crs: "LON" });
         const mockJsonData = { data: "mock-json-data" };
         mockDarwinService.fetchArrivals.mockResolvedValue("mock-xml");
         mockXMLtoJSONConverter.convert.mockResolvedValue(mockJsonData);
 
-        await controller.handle(mockContext as import("koa").Context);
+        await controller.handle(
+          mockContext as unknown as import("koa").Context,
+        );
 
         expect(mockContext.status).toBe(200);
         expect(mockContext.body).toEqual(mockJsonData);
@@ -417,11 +441,13 @@ describe("DarwinBaseClassController", () => {
 
       it("should handle filterCrs parameter correctly", async () => {
         const controller = new TestController();
-        mockContext.request.query = { crs: "LON", filterCrs: "BHM" };
+        mockContext = createMockContext({ filterCrs: "BHM" }, { crs: "LON" });
         mockDarwinService.fetchArrivals.mockResolvedValue("mock-xml");
         mockXMLtoJSONConverter.convert.mockResolvedValue({ data: "mock-json" });
 
-        await controller.handle(mockContext as import("koa").Context);
+        await controller.handle(
+          mockContext as unknown as import("koa").Context,
+        );
 
         expect(mockDarwinService.fetchArrivals).toHaveBeenCalledWith(
           expect.objectContaining({ filterCrs: "BHM" }),
@@ -430,11 +456,16 @@ describe("DarwinBaseClassController", () => {
 
       it("should fallback to default filterType if invalid value is provided", async () => {
         const controller = new TestController();
-        mockContext.request.query = { crs: "LON", filterType: "everywhere!" };
+        mockContext = createMockContext(
+          { filterType: "everywhere!" },
+          { crs: "LON" },
+        );
         mockDarwinService.fetchArrivals.mockResolvedValue("mock-xml");
         mockXMLtoJSONConverter.convert.mockResolvedValue({ data: "mock-json" });
 
-        await controller.handle(mockContext as import("koa").Context);
+        await controller.handle(
+          mockContext as unknown as import("koa").Context,
+        );
 
         expect(mockDarwinService.fetchArrivals).toHaveBeenCalledWith(
           expect.objectContaining({ filterType: "to" }),
@@ -443,11 +474,13 @@ describe("DarwinBaseClassController", () => {
 
       it("should handle timeOffset parameter correctly", async () => {
         const controller = new TestController();
-        mockContext.request.query = { crs: "LON", timeOffset: "30" };
+        mockContext = createMockContext({ timeOffset: "30" }, { crs: "LON" });
         mockDarwinService.fetchArrivals.mockResolvedValue("mock-xml");
         mockXMLtoJSONConverter.convert.mockResolvedValue({ data: "mock-json" });
 
-        await controller.handle(mockContext as import("koa").Context);
+        await controller.handle(
+          mockContext as unknown as import("koa").Context,
+        );
 
         expect(mockDarwinService.fetchArrivals).toHaveBeenCalledWith(
           expect.objectContaining({ timeOffset: "30" }),
@@ -456,11 +489,13 @@ describe("DarwinBaseClassController", () => {
 
       it("should handle timeWindow parameter correctly", async () => {
         const controller = new TestController();
-        mockContext.request.query = { crs: "LON", timeWindow: "120" };
+        mockContext = createMockContext({ timeWindow: "120" }, { crs: "LON" });
         mockDarwinService.fetchArrivals.mockResolvedValue("mock-xml");
         mockXMLtoJSONConverter.convert.mockResolvedValue({ data: "mock-json" });
 
-        await controller.handle(mockContext as import("koa").Context);
+        await controller.handle(
+          mockContext as unknown as import("koa").Context,
+        );
 
         expect(mockDarwinService.fetchArrivals).toHaveBeenCalledWith(
           expect.objectContaining({ timeWindow: "120" }),
@@ -469,13 +504,13 @@ describe("DarwinBaseClassController", () => {
 
       it("should handle errors thrown by DarwinService", async () => {
         const controller = new TestController();
-        mockContext.request.query = { crs: "LON" };
+        mockContext = createMockContext({}, { crs: "LON" });
         mockDarwinService.fetchArrivals.mockRejectedValue(
           new Error("Darwin service error"),
         );
 
         await expect(
-          controller.handle(mockContext as import("koa").Context),
+          controller.handle(mockContext as unknown as import("koa").Context),
         ).rejects.toThrow("Darwin service error");
       });
     });
@@ -485,7 +520,7 @@ describe("DarwinBaseClassController", () => {
     let mockContext: ReturnType<typeof createMockContext>;
 
     beforeEach(() => {
-      mockContext = createMockContext({ crs: TEST_DATA.validCrs });
+      mockContext = createMockContext({}, { crs: TEST_DATA.validCrs });
       setupSuccessfulResponse(mockDarwinService, mockXMLtoJSONConverter);
     });
 
@@ -496,7 +531,7 @@ describe("DarwinBaseClassController", () => {
         serviceMethod,
         expectedResponseType,
       }) => {
-        await testFunction(mockContext as import("koa").Context);
+        await testFunction(mockContext as unknown as import("koa").Context);
 
         expect(MockedDarwinService).toHaveBeenCalledWith(TEST_DATA.mockToken);
         expect(mockDarwinService[serviceMethod]).toHaveBeenCalled();

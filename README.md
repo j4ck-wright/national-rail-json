@@ -6,9 +6,14 @@ The underlying API (Darwin) uses a [SOAP](https://en.wikipedia.org/wiki/SOAP) pr
 
 This app is built specifically to use [OpenLDBWS/ldb11](https://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb11.asmx)
 
-<div position="center">
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
+   <img width="800px" alt="A response from the National Rail JSON Api, showing a list of departing trains from Leeds, including a poor weather alert" src="readme-assets/departure-example.png">
+   <p style="text-align: center;"> Example of departing trains from Leeds </p>
+</div>
 
-<img width="1200px" alt="A response from the National Rail JSON Api, showing a list of departing trains from Leeds, including a poor weather alert" src="readme-assets/nationrailjson.png">
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
+   <img width="800px" alt="A response from the National Rail JSON Api, showing a specific train service, including its previous and next stops" src="readme-assets/service-example.png">
+   <p style="text-align: center;"> Example of train service and next/previous stops </p>
 </div>
 
 ## What is LDBWS?
@@ -28,12 +33,12 @@ This application acts as a modern JSON wrapper around LDBWS, providing:
 Swagger documentation is available at the root of the app. The currently supported routes are:
 
 ```bash
-GET /arrivals
-GET /arrivals/detailed
-GET /departures
-GET /departures/detailed
-GET /arrivals-and-departures
-GET /arrivals-and-departures/detailed
+GET /arrivals/:crs
+GET /arrivals/:crs/detailed
+GET /departures/:crs
+GET /departures/:crs/detailed
+GET /arrivals-and-departures/:crs
+GET /arrivals-and-departures/:crs/detailed
 GET /service:serviceId
 ```
 
@@ -41,10 +46,10 @@ GET /service:serviceId
 
 ```bash
 # Get departures from Leeds showing the next 10 services
-curl "http://localhost:3000/departures?crs=LDS&numRows=10"
+curl "http://localhost:3000/departures/LDS?numRows=10"
 
 # Get arrivals at Bradford Interchange from Leeds
-curl "http://localhost:3000/arrivals?crs=BDI&filterCrs=LDS&filterType=from"
+curl "http://localhost:3000/arrivals/BDI?filterCrs=LDS&filterType=from"
 ```
 
 ## Getting Started

@@ -13,14 +13,14 @@ const router = new Router();
 
 /**
  * @swagger
- * /arrivals:
+ * /arrivals/{crs}:
  *   get:
  *     summary: Get arrival board for a station
  *     description: Retrieve the arrival board for a specific station from National Rail
  *     tags:
  *       - Arrivals
  *     parameters:
- *       - $ref: '#/components/parameters/CrsParameter'
+ *       - $ref: '#/components/parameters/CrsPathParameter'
  *       - $ref: '#/components/parameters/NumRowsParameter'
  *       - $ref: '#/components/parameters/FilterCrsParameter'
  *       - $ref: '#/components/parameters/FilterTypeParameter'
@@ -34,18 +34,18 @@ const router = new Router();
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get("/arrivals", getArrivals);
+router.get("/arrivals/:crs", getArrivals);
 
 /**
  * @swagger
- * /arrivals/detailed:
+ * /arrivals/{crs}/detailed:
  *   get:
  *     summary: Get detailed arrival board for a station
  *     description: Retrieve the detailed arrival board with service information for a specific station from National Rail
  *     tags:
  *       - Arrivals
  *     parameters:
- *       - $ref: '#/components/parameters/CrsParameter'
+ *       - $ref: '#/components/parameters/CrsPathParameter'
  *       - $ref: '#/components/parameters/NumRowsParameter'
  *       - $ref: '#/components/parameters/FilterCrsParameter'
  *       - $ref: '#/components/parameters/FilterTypeParameter'
@@ -59,18 +59,18 @@ router.get("/arrivals", getArrivals);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get("/arrivals/detailed", getDetailedArrivals);
+router.get("/arrivals/:crs/detailed", getDetailedArrivals);
 
 /**
  * @swagger
- * /departures:
+ * /departures/{crs}:
  *   get:
  *     summary: Get departure board for a station
  *     description: Retrieve the departure board for a specific station from National Rail
  *     tags:
  *       - Departures
  *     parameters:
- *       - $ref: '#/components/parameters/CrsParameter'
+ *       - $ref: '#/components/parameters/CrsPathParameter'
  *       - $ref: '#/components/parameters/NumRowsParameter'
  *       - $ref: '#/components/parameters/FilterCrsParameter'
  *       - $ref: '#/components/parameters/FilterTypeParameter'
@@ -84,18 +84,18 @@ router.get("/arrivals/detailed", getDetailedArrivals);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get("/departures", getDepartures);
+router.get("/departures/:crs", getDepartures);
 
 /**
  * @swagger
- * /departures/detailed:
+ * /departures/{crs}/detailed:
  *   get:
  *     summary: Get detailed departure board for a station
  *     description: Retrieve the detailed departure board with service information for a specific station from National Rail
  *     tags:
  *       - Departures
  *     parameters:
- *       - $ref: '#/components/parameters/CrsParameter'
+ *       - $ref: '#/components/parameters/CrsPathParameter'
  *       - $ref: '#/components/parameters/NumRowsParameter'
  *       - $ref: '#/components/parameters/FilterCrsParameter'
  *       - $ref: '#/components/parameters/FilterTypeParameter'
@@ -109,18 +109,18 @@ router.get("/departures", getDepartures);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get("/departures/detailed", getDetailedDepartures);
+router.get("/departures/:crs/detailed", getDetailedDepartures);
 
 /**
  * @swagger
- * /arrivals-and-departures:
+ * /arrivals-and-departures/{crs}:
  *   get:
  *     summary: Get combined arrival and departure board for a station
  *     description: Retrieve both arrivals and departures board for a specific station from National Rail
  *     tags:
  *       - Combined Boards
  *     parameters:
- *       - $ref: '#/components/parameters/CrsParameter'
+ *       - $ref: '#/components/parameters/CrsPathParameter'
  *       - $ref: '#/components/parameters/NumRowsParameter'
  *       - $ref: '#/components/parameters/FilterCrsParameter'
  *       - $ref: '#/components/parameters/FilterTypeParameter'
@@ -134,18 +134,18 @@ router.get("/departures/detailed", getDetailedDepartures);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get("/arrivals-and-departures", getArrivalDepartures);
+router.get("/arrivals-and-departures/:crs", getArrivalDepartures);
 
 /**
  * @swagger
- * /arrivals-and-departures/detailed:
+ * /arrivals-and-departures/{crs}/detailed:
  *   get:
  *     summary: Get detailed combined arrival and departure board for a station
  *     description: Retrieve detailed combined arrivals and departures board with service information for a specific station from National Rail
  *     tags:
  *       - Combined Boards
  *     parameters:
- *       - $ref: '#/components/parameters/CrsParameter'
+ *       - $ref: '#/components/parameters/CrsPathParameter'
  *       - $ref: '#/components/parameters/NumRowsParameter'
  *       - $ref: '#/components/parameters/FilterCrsParameter'
  *       - $ref: '#/components/parameters/FilterTypeParameter'
@@ -159,7 +159,10 @@ router.get("/arrivals-and-departures", getArrivalDepartures);
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
-router.get("/arrivals-and-departures/detailed", getDetailedArrivalDeparture);
+router.get(
+  "/arrivals-and-departures/:crs/detailed",
+  getDetailedArrivalDeparture,
+);
 
 /**
  * @swagger

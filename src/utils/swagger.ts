@@ -27,6 +27,17 @@ const swaggerDefinition = {
         description: "Station CRS code",
         example: "LDS",
       },
+      CrsPathParameter: {
+        in: "path",
+        name: "crs",
+        required: true,
+        schema: {
+          type: "string",
+          pattern: "^[A-Za-z]{3}$",
+        },
+        description: "Station CRS code",
+        example: "LDS",
+      },
       NumRowsParameter: {
         in: "query",
         name: "numRows",
