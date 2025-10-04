@@ -9,6 +9,7 @@
     "lint:fix": "biome check --fix",
     "dev": "tsx watch src/server.ts",
     "build": "tsup",
+    "type:check": "tsc --noEmit",
     "start": "node dist/server.js",
     "test": "vitest run",
     "test:watch": "vitest --watch"
