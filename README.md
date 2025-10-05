@@ -1,10 +1,6 @@
-<div align="center">
-   <img width="400px" alt="Powered by National Rail Enquiries" src="readme-assets//NRE_Powered_logo.png">
-</div>
-
 # 🚂 National Rail JSON API
 
-A RESTful JSON API acting as a proxy to National Rail's LDBWS (Live Departure Board Web Service) written using NodeJS & TypeScript.
+A RESTful JSON API acting as a proxy to [National Rail's LDBWS](https://lite.realtime.nationalrail.co.uk/OpenLDBWS/) (Live Departure Board Web Service) written using NodeJS & TypeScript.
 
 The underlying API (Darwin) uses a [SOAP](https://en.wikipedia.org/wiki/SOAP) protocol and can be perticulaly tricky when using on a frontend application. Darwin provides the Industry’s official designated real-time customer timetable. All of the franchised GB Train Operating Companies supply Darwin with information about when they expect their trains to arrive and depart any given station.
 
@@ -21,11 +17,6 @@ This app is built specifically to use [OpenLDBWS/ldb11](https://lite.realtime.na
 </div>
 
 For consumers using this, I would recommend reading [National Rail Enquiries' Developer Guidelines](https://assets.nationalrail.co.uk/e8xgegruud3g/7yPy7gHJ7j3QZalp2zKZKJ/e32e5b871465c3a5f920e86cc07900d6/Developer_Guidelines_v_05-01.pdf) to see if this fits your use case.
-
-## What is LDBWS?
-
-From [their documentation](https://lite.realtime.nationalrail.co.uk/OpenLDBWS/):
-> LDBWS provides a request-response web service to access real time train information from Darwin. This is the same information that powers the Live Departure Boards, provided in XML format.
 
 ## API Endpoints
 Swagger documentation is available at the root of the app. The currently supported routes are:
@@ -82,3 +73,7 @@ curl "http://localhost:3000/departures/LDS/next?destinationCrs=DON&destinationCr
 - [Biome](https://biomejs.dev/) for linting
 - [Vitest](https://vitest.dev/) as the testing framework of choice
 - [Lefthook](https://lefthook.dev/) from pre-commit checks
+
+<div align="center">
+   <img width="400px" alt="Powered by National Rail Enquiries" src="readme-assets//NRE_Powered_logo.png">
+</div>
