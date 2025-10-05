@@ -12,12 +12,6 @@ vi.mock("@/utils/config", () => ({
       TOKEN: "mock-token",
       ENDPOINT: "https://mock-darwin-endpoint.com/api",
     },
-    SERVER: {
-      PORT: 3000,
-    },
-    LOGGING: {
-      LOG_LEVEL: "info",
-    },
   },
 }));
 

@@ -8,15 +8,8 @@ import swaggerRoutes from "@/api/routes/swagger-routes";
 
 vi.mock("@/utils/config", () => ({
   config: {
-    DARWIN: {
-      TOKEN: "mock-token",
-      ENDPOINT: "https://mock-darwin-endpoint.com/api",
-    },
     SERVER: {
       PORT: 3000,
-    },
-    LOGGING: {
-      LOG_LEVEL: "info",
     },
   },
 }));

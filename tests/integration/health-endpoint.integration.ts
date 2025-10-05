@@ -6,17 +6,6 @@ import { globalErrorCatcher } from "@/api/middleware/error-handler";
 import { logRoute } from "@/api/middleware/log-route";
 import healthRoutes from "@/api/routes/health-route";
 
-vi.mock("@/utils/config", () => ({
-  config: {
-    SERVER: {
-      PORT: 3000,
-    },
-    LOGGING: {
-      LOG_LEVEL: "info",
-    },
-  },
-}));
-
 vi.mock("@/utils/logger", () => ({
   logger: {
     info: vi.fn(),
