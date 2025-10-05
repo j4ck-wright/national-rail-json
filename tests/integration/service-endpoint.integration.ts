@@ -10,7 +10,7 @@ vi.mock("@/utils/config", () => ({
   config: {
     DARWIN: {
       TOKEN: "mock-token",
-      ENDPOINT: "https://mock-darwin-endpoint.com/api",
+      ENDPOINT: "https://mock-darwin-endpoint.com",
     },
   },
 }));
@@ -102,7 +102,7 @@ describe("Service Endpoint Integration Test", () => {
       .expect(200);
 
     expect(mockFetch).toHaveBeenCalledWith(
-      "https://mock-darwin-endpoint.com/api",
+      "https://mock-darwin-endpoint.com",
       expect.objectContaining({
         method: "POST",
         headers: {
@@ -188,7 +188,7 @@ describe("Service Endpoint Integration Test", () => {
       .expect(404);
 
     expect(mockFetch).toHaveBeenCalledWith(
-      "https://mock-darwin-endpoint.com/api",
+      "https://mock-darwin-endpoint.com",
       expect.objectContaining({
         method: "POST",
         headers: {

@@ -10,7 +10,7 @@ vi.mock("@/utils/config", () => ({
   config: {
     DARWIN: {
       TOKEN: "mock-token",
-      ENDPOINT: "https://mock-darwin-endpoint.com/api",
+      ENDPOINT: "https://mock-darwin-endpoint.com",
     },
   },
 }));
@@ -78,7 +78,7 @@ describe("Linear Departure Endpoint Integration Test", () => {
         .expect(200);
 
       expect(mockFetch).toHaveBeenCalledWith(
-        "https://mock-darwin-endpoint.com/api",
+        "https://mock-darwin-endpoint.com",
         expect.objectContaining({
           method: "POST",
           headers: {
@@ -164,7 +164,7 @@ describe("Linear Departure Endpoint Integration Test", () => {
         .expect(200);
 
       expect(mockFetch).toHaveBeenCalledWith(
-        "https://mock-darwin-endpoint.com/api",
+        "https://mock-darwin-endpoint.com",
         expect.objectContaining({
           method: "POST",
           headers: {
@@ -275,7 +275,7 @@ describe("Linear Departure Endpoint Integration Test", () => {
         .expect(200);
 
       expect(mockFetch).toHaveBeenCalledWith(
-        "https://mock-darwin-endpoint.com/api",
+        "https://mock-darwin-endpoint.com",
         expect.objectContaining({
           method: "POST",
           headers: {
@@ -405,7 +405,7 @@ describe("Linear Departure Endpoint Integration Test", () => {
         .expect(200);
 
       expect(mockFetch).toHaveBeenCalledWith(
-        "https://mock-darwin-endpoint.com/api",
+        "https://mock-darwin-endpoint.com",
         expect.objectContaining({
           method: "POST",
           headers: {
@@ -516,7 +516,7 @@ describe("Linear Departure Endpoint Integration Test", () => {
         .expect(500);
 
       expect(mockFetch).toHaveBeenCalledWith(
-        "https://mock-darwin-endpoint.com/api",
+        "https://mock-darwin-endpoint.com",
         expect.objectContaining({
           method: "POST",
           headers: {
