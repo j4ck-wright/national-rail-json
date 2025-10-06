@@ -69,7 +69,7 @@ curl "http://localhost:3000/departures/LDS/next?destinationCrs=DON&destinationCr
 
 ## Built With
 - [Koa](https://koajs.com/) for API routing
-- [Wilson](https://www.npmjs.com/package/winston) for logging
+- [Winston](https://www.npmjs.com/package/winston) for logging
 - [Biome](https://biomejs.dev/) for linting
 - [Vitest](https://vitest.dev/) as the testing framework of choice
 - [Lefthook](https://lefthook.dev/) from pre-commit checks
