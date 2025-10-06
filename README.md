@@ -60,7 +60,7 @@ curl "http://localhost:3000/departures/LDS/next?destinationCrs=DON&destinationCr
    ```bash
    pnpm install
 
-   # Add your environemnt variables from .env.example
+   # Add your environment variables from .env.example
    cp .env.example .env
    
    # Start development server
